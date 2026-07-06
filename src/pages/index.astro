@@ -1,0 +1,150 @@
+---
+import Layout from "../layouts/Layout.astro";
+import {
+  getGithubProfile,
+  getGithubRepos,
+  getGithubOrgRepos,
+  aggregateLanguages,
+  GITHUB_USERNAME,
+} from "../lib/github";
+import skillsData from "../data/skills.json";
+
+const [profile, ownRepos, orgRepos] = await Promise.all([
+  getGithubProfile(),
+  getGithubRepos(),
+  getGithubOrgRepos(),
+]);
+
+const allRepos = [...ownRepos, ...orgRepos];
+const languages = aggregateLanguages(allRepos).slice(0, 8);
+
+const repos = allRepos
+  .slice()
+  .sort((a: any, b: any) => (b.stargazers_count ?? 0) - (a.stargazers_count ?? 0))
+  .slice(0, 12);
+
+const accents = ["var(--teal)", "var(--violet)", "var(--amber)", "var(--coral)", "var(--green)", "var(--sky)"];
+---
+
+<Layout>
+  <header>
+    <a href="/" class="logo">RJM<span>L</span> · Dev</a>
+    <a href="https://rjmlaird.co.uk" class="home-link">rjmlaird.co.uk ↗</a>
+  </header>
+
+  <main>
+    <p class="sl">Dev & open source</p>
+
+    <h1 class="ch">Code, <em>live from GitHub</em></h1>
+
+    <p class="lede">
+      Repositories, languages, and tools — pulled directly from the GitHub API at build time,
+      so this updates itself automatically.
+    </p>
+
+    {/* PROFILE */}
+    {profile ? (
+      <div class="dev-hero">
+        <img class="dev-avatar" src={profile.avatar_url} alt={profile.name ?? GITHUB_USERNAME} loading="lazy" />
+        <div>
+          <p class="dev-name">{profile.name ?? GITHUB_USERNAME}</p>
+          {profile.bio && <p class="dev-bio">{profile.bio}</p>}
+          <div class="dev-badges">
+            <a href={profile.html_url} target="_blank" rel="noopener noreferrer">
+              <img src={`https://img.shields.io/badge/-%40${GITHUB_USERNAME}-141B29?style=flat-square&logo=github&logoColor=EDEAE3`} alt="GitHub profile" />
+            </a>
+            <img src={`https://img.shields.io/github/followers/${GITHUB_USERNAME}?style=flat-square&label=followers&color=00C2A8&labelColor=141B29`} alt="GitHub followers" />
+            <img src={`https://img.shields.io/badge/public_repos-${profile.public_repos ?? 0}-141B29?style=flat-square&labelColor=141B29&color=A78BFA`} alt="Public repos" />
+          </div>
+        </div>
+      </div>
+    ) : (
+      <p class="empty-state">
+        GitHub's API is being rate-limited or unreachable from this build — visit
+        <a href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer"> github.com/{GITHUB_USERNAME}</a> directly in the meantime.
+      </p>
+    )}
+
+    {/* LANGUAGES */}
+    {languages.length > 0 && (
+      <>
+        <p class="tlbl">Languages across repos</p>
+        <div class="lang-list">
+          {languages.map((lang, i) => (
+            <div class="lang-row">
+              <span class="lang-name">{lang.name}</span>
+              <div class="lang-track">
+                <div class="lang-fill" style={`width:${lang.pct}%;background:${accents[i % accents.length]}`}></div>
+              </div>
+              <span class="lang-pct">{lang.pct}%</span>
+            </div>
+          ))}
+        </div>
+      </>
+    )}
+
+    {/* SKILLS */}
+    <p class="tlbl">Tools & skills</p>
+    <div class="skill-groups">
+      {skillsData.groups.map((group) => (
+        <div>
+          <p class="skill-cat">{group.category}</p>
+          <div class="skill-badges">
+            {group.items.map((item) => (
+              <span class="badge">{item}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* REPOS */}
+    <p class="tlbl">Repositories</p>
+
+    {repos.length ? (
+      <div class="repo-grid">
+        {repos.map((repo: any) => {
+          const [owner, name] = (repo.full_name ?? `${GITHUB_USERNAME}/${repo.name}`).split("/");
+          const isOrg = owner !== GITHUB_USERNAME;
+          return (
+            <article class="repo-card">
+              {isOrg && <p class="repo-org">{owner}</p>}
+              <a href={repo.html_url} class="repo-name" target="_blank" rel="noopener noreferrer">
+                {repo.name} <span>↗</span>
+              </a>
+              {repo.description && <p class="repo-desc">{repo.description}</p>}
+              {repo.topics?.length > 0 && (
+                <div class="repo-topics">
+                  {repo.topics.slice(0, 5).map((topic: string) => (
+                    <span class="tag">{topic}</span>
+                  ))}
+                </div>
+              )}
+              <div class="repo-badges">
+                <img src={`https://img.shields.io/github/stars/${owner}/${name}?style=flat-square&labelColor=141B29&color=F5A623`} alt="Stars" />
+                <img src={`https://img.shields.io/github/last-commit/${owner}/${name}?style=flat-square&labelColor=141B29&color=00C2A8`} alt="Last commit" />
+                {repo.language && (
+                  <img src={`https://img.shields.io/badge/-${encodeURIComponent(repo.language)}-141B29?style=flat-square&labelColor=141B29&color=A78BFA`} alt={repo.language} />
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <p class="empty-state">
+        No repos came back from GitHub for this build (likely a rate limit) — the full, live
+        list is always at
+        <a href={`https://github.com/${GITHUB_USERNAME}?tab=repositories`} target="_blank" rel="noopener noreferrer"> github.com/{GITHUB_USERNAME}</a>.
+      </p>
+    )}
+
+    <a href={`https://github.com/${GITHUB_USERNAME}?tab=repositories`} class="gh-cta" target="_blank" rel="noopener noreferrer">
+      All repositories on GitHub ↗
+    </a>
+  </main>
+
+  <footer>
+    <p>Ryan Laird · <a href="https://rjmlaird.co.uk">rjmlaird.co.uk</a> · <a href={`https://github.com/${GITHUB_USERNAME}`}>GitHub</a></p>
+  </footer>
+</Layout>
