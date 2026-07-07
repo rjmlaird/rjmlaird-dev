@@ -106,24 +106,6 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
       </>
     )}
 
-    {/* ACTIVITY */}
-    <p class="tlbl">Recent activity</p>
-    {activity.length ? (
-      <div class="activity-list">
-        {activity.map((event) => (
-          <div class="activity-row">
-            <a href={event.url} target="_blank" rel="noopener noreferrer">{event.summary}</a>
-            <span class="activity-date">{timeAgo(event.date)}</span>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p class="empty-state">No recent public activity came back from GitHub for this build.</p>
-    )}
-    <div class="activity-graph">
-      <img src={`https://ghchart.rshah.org/00C2A8/${GITHUB_USERNAME}`} alt={`${GITHUB_USERNAME}'s GitHub contribution graph`} loading="lazy" />
-    </div>
-    <p class="activity-note">Contribution graph via a third-party visualisation (ghchart.rshah.org) — if it's ever down, the live version is always on the GitHub profile itself.</p>
 
     {/* LANGUAGES */}
     {languages.length > 0 && (
@@ -231,6 +213,26 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
     <a href={`https://github.com/${GITHUB_USERNAME}?tab=repositories`} class="gh-cta" target="_blank" rel="noopener noreferrer">
       All repositories on GitHub ↗
     </a>
+
+
+    {/* ACTIVITY */}
+    <p class="tlbl">Recent activity</p>
+    {activity.length ? (
+      <div class="activity-list">
+        {activity.map((event) => (
+          <div class="activity-row">
+            <a href={event.url} target="_blank" rel="noopener noreferrer">{event.summary}</a>
+            <span class="activity-date">{timeAgo(event.date)}</span>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p class="empty-state">No recent public activity came back from GitHub for this build.</p>
+    )}
+    <div class="activity-graph">
+      <img src={`https://ghchart.rshah.org/00C2A8/${GITHUB_USERNAME}`} alt={`${GITHUB_USERNAME}'s GitHub contribution graph`} loading="lazy" />
+    </div>
+    <p class="activity-note">Contribution graph via a third-party visualisation (ghchart.rshah.org) — if it's ever down, the live version is always on the GitHub profile itself.</p>
   </main>
 
   <footer>
