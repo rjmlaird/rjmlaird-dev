@@ -3,10 +3,18 @@ import Layout from "../layouts/Layout.astro";
 
 const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
 const GITHUB_USERNAME = "rjmlaird";
-const PROJECT_NUMBER = 1;
+const ORG_LOGIN = "YOUR_ORG";
+const USER_PROJECT_NUMBER = 1;
+const ORG_PROJECT_NUMBER = 1;
 
 const query = `
-  query($login: String!, $number: Int!, $repoFirst: Int!) {
+  query(
+    $login: String!
+    $number: Int!
+    $repoFirst: Int!
+    $orgLogin: String!
+    $orgProjectNumber: Int!
+  ) {
     user(login: $login) {
       projectV2(number: $number) {
         title
@@ -42,18 +50,58 @@ const query = `
           stargazerCount
           primaryLanguage {
             name
-            color
           }
-          updatedAt
+        }
+      }
+    }
+    organization(login: $orgLogin) {
+      projectV2(number: $orgProjectNumber) {
+        title
+        shortDescription
+        url
+        items(first: 10) {
+          nodes {
+            content {
+              __typename
+              ... on Issue {
+                title
+                url
+              }
+              ... on PullRequest {
+                title
+                url
+              }
+              ... on DraftIssue {
+                title
+              }
+            }
+          }
+        }
+      }
+      repositories(first: $repoFirst, privacy: PUBLIC, orderBy: { field: PUSHED_AT, direction: DESC }) {
+        nodes {
+          name
+          nameWithOwner
+          description
+          url
+          homepageUrl
+          isFork
+          stargazerCount
+          primaryLanguage {
+            name
+          }
         }
       }
     }
   }
 `;
 
-let project = null;
-let projectItems = [];
-let repositories = [];
+let userProject = null;
+let userItems = [];
+let userRepositories = [];
+let orgProject = null;
+let orgItems = [];
+let orgRepositories = [];
 let projectError = null;
 
 if (GITHUB_TOKEN) {
@@ -68,8 +116,10 @@ if (GITHUB_TOKEN) {
         query,
         variables: {
           login: GITHUB_USERNAME,
-          number: PROJECT_NUMBER,
+          number: USER_PROJECT_NUMBER,
           repoFirst: 12,
+          orgLogin: ORG_LOGIN,
+          orgProjectNumber: ORG_PROJECT_NUMBER,
         },
       }),
     });
@@ -79,12 +129,21 @@ if (GITHUB_TOKEN) {
     if (json?.errors?.length) {
       projectError = json.errors[0].message ?? "GitHub GraphQL query failed.";
     } else {
-      project = json?.data?.user?.projectV2 ?? null;
-      projectItems = (project?.items?.nodes ?? [])
+      userProject = json?.data?.user?.projectV2 ?? null;
+      userItems = (userProject?.items?.nodes ?? [])
         .map((node) => node?.content)
         .filter(Boolean);
 
-      repositories = (json?.data?.user?.repositories?.nodes ?? []).filter(
+      userRepositories = (json?.data?.user?.repositories?.nodes ?? []).filter(
+        (repo) => repo && !repo.isFork
+      );
+
+      orgProject = json?.data?.organization?.projectV2 ?? null;
+      orgItems = (orgProject?.items?.nodes ?? [])
+        .map((node) => node?.content)
+        .filter(Boolean);
+
+      orgRepositories = (json?.data?.organization?.repositories?.nodes ?? []).filter(
         (repo) => repo && !repo.isFork
       );
     }
@@ -107,46 +166,45 @@ if (GITHUB_TOKEN) {
   </section>
 
   <section class="section-tight">
-    <p class="eyebrow">Current board</p>
-    <h2>{project ? project.title : "GitHub Project not available"}</h2>
-
-    {project?.shortDescription && <p class="body-text">{project.shortDescription}</p>}
-
-    {project ? (
+    <p class="eyebrow">Personal board</p>
+    <h2>{userProject ? userProject.title : "GitHub Project not available"}</h2>
+    {userProject?.shortDescription && <p class="body-text">{userProject.shortDescription}</p>}
+    {userProject && (
       <div class="card" style="margin-top:1.5rem;">
-        <p>
-          <strong>Board:</strong>{" "}
-          <a href={project.url} target="_blank" rel="noreferrer">Open in GitHub</a>
-        </p>
-
-        <p style="margin-top:.75rem;"><strong>Items:</strong></p>
+        <p><strong>Board:</strong> <a href={userProject.url} target="_blank" rel="noreferrer">Open in GitHub</a></p>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
-          {projectItems.length > 0 ? (
-            projectItems.map((item) => (
-              <li style="color:var(--m);">
-                {item?.url ? (
-                  <a href={item.url} target="_blank" rel="noreferrer">
-                    {item?.title ?? "Untitled item"}
-                  </a>
-                ) : (
-                  item?.title ?? "Untitled item"
-                )}
-                <span style="margin-left:.5rem;opacity:.7;font-size:.88rem;">
-                  {item?.__typename ?? "Project item"}
-                </span>
-              </li>
-            ))
-          ) : (
-            <li style="color:var(--m);">No items available right now.</li>
-          )}
+          {userItems.map((item) => (
+            <li style="color:var(--m);">
+              {item?.url ? (
+                <a href={item.url} target="_blank" rel="noreferrer">{item?.title ?? "Untitled item"}</a>
+              ) : (
+                item?.title ?? "Untitled item"
+              )}
+            </li>
+          ))}
         </ul>
       </div>
-    ) : (
+    )}
+  </section>
+
+  <section class="section-tight">
+    <p class="eyebrow">Organisation board</p>
+    <h2>{orgProject ? orgProject.title : "Organisation project not available"}</h2>
+    {orgProject?.shortDescription && <p class="body-text">{orgProject.shortDescription}</p>}
+    {orgProject && (
       <div class="card" style="margin-top:1.5rem;">
-        <p class="body-text">
-          The project board couldn’t be loaded at build time.
-          {projectError ? ` ${projectError}` : ""}
-        </p>
+        <p><strong>Board:</strong> <a href={orgProject.url} target="_blank" rel="noreferrer">Open in GitHub</a></p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
+          {orgItems.map((item) => (
+            <li style="color:var(--m);">
+              {item?.url ? (
+                <a href={item.url} target="_blank" rel="noreferrer">{item?.title ?? "Untitled item"}</a>
+              ) : (
+                item?.title ?? "Untitled item"
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     )}
   </section>
@@ -155,39 +213,34 @@ if (GITHUB_TOKEN) {
     <p class="eyebrow">Open source</p>
     <h2>Public repositories</h2>
 
-    {repositories.length > 0 ? (
-      <div class="grid-3" style="margin-top:2rem;">
-        {repositories.map((repo) => (
-          <article class="card">
-            <p class="eyebrow" style="margin-bottom:.5rem;">{repo.primaryLanguage?.name ?? "Code"}</p>
-            <h3>{repo.name}</h3>
-            {repo.description ? <p>{repo.description}</p> : <p>No description provided.</p>}
-            <ul style="list-style:none;display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 0;padding:0;">
-              {repo.primaryLanguage?.name && <li class="pill">{repo.primaryLanguage.name}</li>}
-              {repo.stargazerCount > 0 && <li class="pill">{repo.stargazerCount} stars</li>}
-              {repo.isFork && <li class="pill">Fork</li>}
-            </ul>
-            <div class="hero-actions" style="margin-top:1rem;">
-              <a href={repo.url} class="card-link" target="_blank" rel="noreferrer">Repo →</a>
-              {repo.homepageUrl && (
-                <a href={repo.homepageUrl} class="card-link" target="_blank" rel="noreferrer">
-                  Live site →
-                </a>
-              )}
-            </div>
-          </article>
-        ))}
-      </div>
-    ) : (
-      <p class="body-text" style="margin-top:1rem;">No public repositories found yet.</p>
-    )}
+    <h3 style="margin-top:1rem;">Personal repositories</h3>
+    <div class="grid-3" style="margin-top:1rem;">
+      {userRepositories.map((repo) => (
+        <article class="card">
+          <h3>{repo.name}</h3>
+          {repo.description ? <p>{repo.description}</p> : <p>No description provided.</p>}
+          <a href={repo.url} class="card-link" target="_blank" rel="noreferrer">Repo →</a>
+        </article>
+      ))}
+    </div>
+
+    <h3 style="margin-top:2rem;">Organisation repositories</h3>
+    <div class="grid-3" style="margin-top:1rem;">
+      {orgRepositories.map((repo) => (
+        <article class="card">
+          <h3>{repo.name}</h3>
+          {repo.description ? <p>{repo.description}</p> : <p>No description provided.</p>}
+          <a href={repo.url} class="card-link" target="_blank" rel="noreferrer">Repo →</a>
+        </article>
+      ))}
+    </div>
   </section>
 
   <section class="section-tight">
     <div class="cta-band">
       <h2>Want the full picture?</h2>
       <p class="lede">
-        See the live GitHub board, browse repositories, or get in touch about collaboration.
+        See the live GitHub boards, browse repositories, or get in touch about collaboration.
       </p>
       <div class="hero-actions">
         <a href="https://github.com/rjmlaird" class="btn-cta" target="_blank" rel="noreferrer">View GitHub</a>
