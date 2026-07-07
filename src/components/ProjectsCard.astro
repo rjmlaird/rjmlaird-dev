@@ -27,41 +27,75 @@ interface Project {
   tasksBlocked?: number;
   due?: string;
   updated?: string;
+
+  scope?: "personal" | "org";
+  organization?: string;
+  language?: string;
 }
 
 interface Props {
   project?: Project;
+  index?: number;
 }
 
-const { project } = Astro.props as Props;
-const data = project ?? {};
+const props = Astro.props as Props;
+const project = props.project ?? {};
 
-const number = data.id ? String(data.id).padStart(2, "0") : "";
-const title = data.title ?? "Untitled Project";
-const excerpt = data.excerpt ?? data.summary ?? data.description ?? "";
-const topic = data.topic ?? "";
-const topics = data.topics ?? data.tools ?? (topic ? [topic] : []);
-const features = data.features ?? [];
-const image = data.image ?? "";
-const imageCredit = data.imageCredit ?? "";
-const link = data.url || data.live || data.github || data.repository || "#";
-const variant = data.variant ?? "teal";
-const outcome = data.outcome ?? "";
+const clean = (v: unknown) => (v === null || v === undefined ? "" : String(v).trim());
 
-const status = data.status ?? "";
-const priority = data.priority ?? "";
-const phase = data.phase ?? "";
-const due = data.due ?? "";
-const updated = data.updated ?? "";
+const titleCase = (s: string) =>
+  s
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(" ");
 
-const tasksDone = data.tasksDone ?? null;
-const tasksOpen = data.tasksOpen ?? null;
-const tasksBlocked = data.tasksBlocked ?? null;
+const number = props.index
+  ? String(props.index).padStart(2, "0")
+  : project.id
+    ? String(project.id).padStart(2, "0")
+    : "";
+
+const title = clean(project.title) || "Untitled Project";
+const excerpt = clean(project.excerpt ?? project.summary ?? project.description);
+const topic = clean(project.topic);
+const topics = project.topics ?? project.tools ?? (topic ? [topic] : []);
+const image = clean(project.image);
+const imageCredit = clean(project.imageCredit);
+const link = clean(project.url || project.live || project.github || project.repository) || "#";
+const variant = project.variant ?? "teal";
+const outcome = clean(project.outcome);
+const scope = clean(project.scope);
+const language = clean(project.language);
+const organization = clean(project.organization);
+
+const organizationLabel = organization
+  ? titleCase(organization)
+  : scope === "org"
+    ? "Organisation"
+    : "";
+
+const status = project.status ?? "";
+const priority = project.priority ?? "";
+const phase = clean(project.phase);
+const due = clean(project.due);
+const updated = clean(project.updated);
+
+const tasksDone = project.tasksDone ?? null;
+const tasksOpen = project.tasksOpen ?? null;
+const tasksBlocked = project.tasksBlocked ?? null;
+
+const hasDone = tasksDone !== null && tasksDone > 0;
+const hasOpen = tasksOpen !== null && tasksOpen > 0;
+const hasBlocked = tasksBlocked !== null && tasksBlocked > 0;
+
 const tasksTotal =
-  data.tasksTotal ??
+  project.tasksTotal ??
   (tasksDone !== null || tasksOpen !== null || tasksBlocked !== null
     ? (tasksDone ?? 0) + (tasksOpen ?? 0) + (tasksBlocked ?? 0)
     : null);
+
+const hasTasks = (tasksTotal !== null && tasksTotal > 0) || hasOpen || hasBlocked;
 
 const statusLabel: Record<NonNullable<Project["status"]>, string> = {
   planned: "Planned",
@@ -79,7 +113,7 @@ const priorityLabel: Record<NonNullable<Project["priority"]>, string> = {
 ---
 
 <article class="pr pub">
-  <p class="pn">{number}</p>
+  {number && <p class="pn">{number}</p>}
 
   {image ? (
     <div class="pub-media pub-image">
@@ -90,17 +124,16 @@ const priorityLabel: Record<NonNullable<Project["priority"]>, string> = {
 
   <div class="pm">
     <div class="pub-top">
-      <h3>{title}</h3>
+      <h3>
+        <a href={link} target="_blank" rel="noopener noreferrer">
+          {title}
+        </a>
+      </h3>
 
-      {(status || phase || outcome) && (
+      {(organizationLabel || language || phase || outcome) && (
         <div class="meta-row">
-          {status && (
-            <span class={`status-pill status-${status}`}>
-              <span class="status-dot" aria-hidden="true"></span>
-              {statusLabel[status]}
-            </span>
-          )}
-
+          {organizationLabel && <span class="meta-pill">{organizationLabel}</span>}
+          {language && <span class="meta-pill">{language}</span>}
           {phase && <span class="meta-pill">{phase}</span>}
           {outcome && <span class={`client-badge ${variant}`}>{outcome}</span>}
         </div>
@@ -109,36 +142,25 @@ const priorityLabel: Record<NonNullable<Project["priority"]>, string> = {
 
     {excerpt && <p>{excerpt}</p>}
 
-    {(tasksTotal !== null || priority || due || updated) && (
+    {(hasTasks || priority || due || updated) && (
       <div class="stats-row">
-        {tasksTotal !== null && (
+        {hasDone && tasksTotal !== null && (
           <span class="stat-pill">
-            {tasksDone ?? 0}/{tasksTotal} done
+            {(tasksDone ?? 0)}/{tasksTotal} done
           </span>
         )}
-
-        {tasksOpen !== null && <span class="stat-pill">{tasksOpen} open</span>}
-        {tasksBlocked !== null && <span class="stat-pill">{tasksBlocked} blocked</span>}
-
-        {priority && (
-          <span class={`stat-pill priority-${priority}`}>
-            {priorityLabel[priority]}
-          </span>
-        )}
-
+        {hasOpen && <span class="stat-pill">{tasksOpen} open</span>}
+        {hasBlocked && <span class="stat-pill">{tasksBlocked} blocked</span>}
+        {priority && <span class={`stat-pill priority-${priority}`}>{priorityLabel[priority]}</span>}
         {due && <span class="stat-pill">Due {due}</span>}
         {updated && <span class="stat-pill">Updated {updated}</span>}
       </div>
     )}
 
-    {(topics.length > 0 || features.length > 0) && (
+    {topics.length > 0 && (
       <div class="pt">
         {topics.map((t) => (
           <span class="tag">{t}</span>
-        ))}
-
-        {features.map((feature) => (
-          <span class="tag">{feature}</span>
         ))}
       </div>
     )}
@@ -149,3 +171,163 @@ const priorityLabel: Record<NonNullable<Project["priority"]>, string> = {
     <span>View</span>
   </a>
 </article>
+
+<style>
+  .pub {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .pub::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.02));
+    opacity: 0;
+    transition: opacity 180ms ease;
+    z-index: 0;
+  }
+
+  .pub:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    border-color: color-mix(in srgb, currentColor 24%, transparent);
+  }
+
+  .pub:hover::before {
+    opacity: 1;
+  }
+
+  .pn,
+  .pm,
+  .pa {
+    position: relative;
+    z-index: 2;
+  }
+
+  .pn {
+    margin: 0 0 0.85rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #16a34a;
+    opacity: 0.95;
+  }
+
+  .pub-media {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: #111;
+    margin-bottom: 1rem;
+  }
+
+  .pub-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .image-credit {
+    position: absolute;
+    left: 0.65rem;
+    right: 0.65rem;
+    bottom: 0.65rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.55rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    backdrop-filter: blur(6px);
+  }
+
+  .pub-top {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .pub-top h3 {
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  .pub-top h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .pub-top h3 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.16em;
+  }
+
+  .meta-row,
+  .stats-row,
+  .pt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .meta-pill,
+  .client-badge,
+  .stat-pill,
+  .tag,
+  .pa {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    line-height: 1;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    background: color-mix(in srgb, currentColor 4%, transparent);
+  }
+
+  .pa {
+    text-decoration: none;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    line-height: 1;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    background: color-mix(in srgb, currentColor 4%, transparent);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: currentColor;
+    box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 16%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .pub-media {
+      aspect-ratio: 4 / 3;
+      margin-bottom: 0.85rem;
+    }
+  }
+</style>
