@@ -6,22 +6,16 @@ const GITHUB_USERNAME = "rjmlaird";
 const PROJECT_NUMBER = 1;
 
 const query = `
-  query($login: String!, $number: Int!) {
+  query($login: String!, $number: Int!, $repoFirst: Int!) {
     user(login: $login) {
       projectV2(number: $number) {
         title
         shortDescription
         url
-        fields(first: 20) {
-          nodes {
-            ... on ProjectV2FieldCommon {
-              name
-            }
-          }
-        }
         items(first: 10) {
           nodes {
             content {
+              __typename
               ... on Issue {
                 title
                 url
@@ -30,35 +24,76 @@ const query = `
                 title
                 url
               }
+              ... on DraftIssue {
+                title
+              }
             }
           }
+        }
+      }
+      repositories(first: $repoFirst, privacy: PUBLIC, orderBy: { field: PUSHED_AT, direction: DESC }) {
+        nodes {
+          name
+          nameWithOwner
+          description
+          url
+          homepageUrl
+          isFork
+          stargazerCount
+          primaryLanguage {
+            name
+            color
+          }
+          updatedAt
         }
       }
     }
   }
 `;
 
-const response = await fetch("https://api.github.com/graphql", {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${GITHUB_TOKEN}`,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    query,
-    variables: {
-      login: GITHUB_USERNAME,
-      number: PROJECT_NUMBER,
-    },
-  }),
-});
+let project = null;
+let projectItems = [];
+let repositories = [];
+let projectError = null;
 
-const json = await response.json();
-const project = json?.data?.user?.projectV2 ?? null;
+if (GITHUB_TOKEN) {
+  try {
+    const response = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query,
+        variables: {
+          login: GITHUB_USERNAME,
+          number: PROJECT_NUMBER,
+          repoFirst: 12,
+        },
+      }),
+    });
 
-const items = (project?.items?.nodes ?? [])
-  .map((node) => node?.content)
-  .filter(Boolean);
+    const json = await response.json();
+
+    if (json?.errors?.length) {
+      projectError = json.errors[0].message ?? "GitHub GraphQL query failed.";
+    } else {
+      project = json?.data?.user?.projectV2 ?? null;
+      projectItems = (project?.items?.nodes ?? [])
+        .map((node) => node?.content)
+        .filter(Boolean);
+
+      repositories = (json?.data?.user?.repositories?.nodes ?? []).filter(
+        (repo) => repo && !repo.isFork
+      );
+    }
+  } catch (err) {
+    projectError = err instanceof Error ? err.message : "Unable to load project data.";
+  }
+} else {
+  projectError = "Missing GITHUB_TOKEN.";
+}
 ---
 
 <Layout title="Projects">
@@ -66,58 +101,94 @@ const items = (project?.items?.nodes ?? [])
     <p class="eyebrow">Projects</p>
     <h1>Selected work and current focus</h1>
     <p class="lede">
-      A mix of active projects, open source tools, experiments, and client work — with the latest status
-      pulled from GitHub Projects where available.
+      A mix of active projects, open source tools, experiments, and client work — with live data
+      from GitHub where available.
     </p>
   </section>
 
   <section class="section-tight">
     <p class="eyebrow">Current board</p>
     <h2>{project ? project.title : "GitHub Project not available"}</h2>
-    {project && <p class="body-text">{project.shortDescription}</p>}
+
+    {project?.shortDescription && <p class="body-text">{project.shortDescription}</p>}
 
     {project ? (
       <div class="card" style="margin-top:1.5rem;">
-        <p><strong>Board:</strong> <a href={project.url} target="_blank" rel="noreferrer">Open in GitHub</a></p>
+        <p>
+          <strong>Board:</strong>{" "}
+          <a href={project.url} target="_blank" rel="noreferrer">Open in GitHub</a>
+        </p>
+
         <p style="margin-top:.75rem;"><strong>Items:</strong></p>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
-          {items.length > 0 ? items.map((item) => (
-            <li style="color:var(--m);">
-              <a href={item.url} target="_blank" rel="noreferrer">{item.title}</a>
-            </li>
-          )) : <li style="color:var(--m);">No items available right now.</li>}
+          {projectItems.length > 0 ? (
+            projectItems.map((item) => (
+              <li style="color:var(--m);">
+                {item?.url ? (
+                  <a href={item.url} target="_blank" rel="noreferrer">
+                    {item?.title ?? "Untitled item"}
+                  </a>
+                ) : (
+                  item?.title ?? "Untitled item"
+                )}
+                <span style="margin-left:.5rem;opacity:.7;font-size:.88rem;">
+                  {item?.__typename ?? "Project item"}
+                </span>
+              </li>
+            ))
+          ) : (
+            <li style="color:var(--m);">No items available right now.</li>
+          )}
         </ul>
       </div>
     ) : (
-      <p class="body-text" style="margin-top:1rem;">
-        The project board couldn’t be loaded at build time, so this page can still fall back to a curated list below.
-      </p>
+      <div class="card" style="margin-top:1.5rem;">
+        <p class="body-text">
+          The project board couldn’t be loaded at build time.
+          {projectError ? ` ${projectError}` : ""}
+        </p>
+      </div>
     )}
   </section>
 
   <section class="section-tight">
     <p class="eyebrow">Open source</p>
-    <h2>Tools and repositories</h2>
-    <div class="grid-3" style="margin-top:2rem;">
-      <article class="card">
-        <h3>Astro site components</h3>
-        <p>Layouts, themes, and UI patterns used across this site.</p>
-      </article>
-      <article class="card">
-        <h3>Data utilities</h3>
-        <p>Scripts for fetching, cleaning, and visualising technical and geospatial data.</p>
-      </article>
-      <article class="card">
-        <h3>Open source experiments</h3>
-        <p>Small tools and prototypes that explore workflow automation and interface design.</p>
-      </article>
-    </div>
+    <h2>Public repositories</h2>
+
+    {repositories.length > 0 ? (
+      <div class="grid-3" style="margin-top:2rem;">
+        {repositories.map((repo) => (
+          <article class="card">
+            <p class="eyebrow" style="margin-bottom:.5rem;">{repo.primaryLanguage?.name ?? "Code"}</p>
+            <h3>{repo.name}</h3>
+            {repo.description ? <p>{repo.description}</p> : <p>No description provided.</p>}
+            <ul style="list-style:none;display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 0;padding:0;">
+              {repo.primaryLanguage?.name && <li class="pill">{repo.primaryLanguage.name}</li>}
+              {repo.stargazerCount > 0 && <li class="pill">{repo.stargazerCount} stars</li>}
+              {repo.isFork && <li class="pill">Fork</li>}
+            </ul>
+            <div class="hero-actions" style="margin-top:1rem;">
+              <a href={repo.url} class="card-link" target="_blank" rel="noreferrer">Repo →</a>
+              {repo.homepageUrl && (
+                <a href={repo.homepageUrl} class="card-link" target="_blank" rel="noreferrer">
+                  Live site →
+                </a>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p class="body-text" style="margin-top:1rem;">No public repositories found yet.</p>
+    )}
   </section>
 
   <section class="section-tight">
     <div class="cta-band">
       <h2>Want the full picture?</h2>
-      <p class="lede">See the live GitHub board, browse repositories, or get in touch about collaboration.</p>
+      <p class="lede">
+        See the live GitHub board, browse repositories, or get in touch about collaboration.
+      </p>
       <div class="hero-actions">
         <a href="https://github.com/rjmlaird" class="btn-cta" target="_blank" rel="noreferrer">View GitHub</a>
         <a href="/contact" class="btn-outline">Contact me</a>
