@@ -1094,3 +1094,16 @@ footer a:hover{color:var(--w)}
     margin-bottom: 0.85rem;
   }
 }
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(11,15,26,.93);backdrop-filter:blur(18px);border-bottom:1px solid var(--bd);z-index:300}
+.logo{font-family:var(--D);font-size:.93rem;font-weight:700;letter-spacing:.04em;color:var(--w);text-decoration:none}
+.logo span{color:var(--teal)}
+.nl{display:flex;gap:1.6rem;list-style:none}
+.nl a{font-family:var(--D);font-size:.75rem;font-weight:500;color:var(--m);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.nl a:hover{color:var(--w)}
+.nr{display:flex;gap:.7rem;align-items:center}
+.nsub{font-family:var(--D);font-size:.7rem;font-weight:500;color:var(--m);text-decoration:none;border:1px solid var(--bm);padding:.28rem .65rem;border-radius:3px;transition:border-color .2s,color .2s}
+.nsub:hover{border-color:var(--m);color:var(--w)}
+.ncta{font-family:var(--D);font-size:.76rem;font-weight:600;color:var(--ink);background:var(--teal);padding:.36rem .95rem;border-radius:3px;text-decoration:none;transition:opacity .2s}
+.ncta:hover{opacity:.87}

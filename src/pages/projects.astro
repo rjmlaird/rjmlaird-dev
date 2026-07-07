@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
 import ProjectCard from "../components/ProjectsCard.astro";
 
 const DEV_TOKEN = import.meta.env.DEV_TOKEN;
@@ -157,6 +158,7 @@ const languageList = [...new Set(cards.map((card) => card.language).filter(Boole
 ---
 
 <Layout title="Projects">
+  <Nav />
   <section class="section publications-gallery">
     <div class="container pg-shell">
       <header class="pg-head">

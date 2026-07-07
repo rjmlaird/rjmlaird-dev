@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
 import {
   getGithubProfile,
   getGithubRepos,
@@ -51,6 +52,7 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
 ---
 
 <Layout>
+  <Nav />
   <header>
     <a href="/" class="logo">RJM<span>L</span> · Dev</a>
     <a href="https://rjmlaird.co.uk" class="home-link">rjmlaird.co.uk ↗</a>
