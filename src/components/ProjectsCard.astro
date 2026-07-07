@@ -1,0 +1,90 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  href?: string;
+  github?: string;
+  status?: string;
+  stack?: string[];
+  featured?: boolean;
+}
+
+const {
+  title,
+  description,
+  href,
+  github,
+  status,
+  stack = [],
+  featured = false,
+} = Astro.props;
+---
+
+<article class:list={["card", { featured }]}>
+  <div class="project-head">
+    <div>
+      <h3>{title}</h3>
+      {status && <p class="project-status">{status}</p>}
+    </div>
+
+    {featured && <span class="pill">Featured</span>}
+  </div>
+
+  <p>{description}</p>
+
+  {stack.length > 0 && (
+    <ul class="stack-list" aria-label={`${title} stack`}>
+      {stack.map((item) => <li class="pill">{item}</li>)}
+    </ul>
+  )}
+
+  <div class="project-links">
+    {href && (
+      <a class="card-link" href={href} target="_blank" rel="noreferrer">
+        Live site →
+      </a>
+    )}
+    {github && (
+      <a class="card-link" href={github} target="_blank" rel="noreferrer">
+        Source code →
+      </a>
+    )}
+  </div>
+</article>
+
+<style>
+  .featured {
+    border-color: var(--bm);
+    box-shadow: var(--shadow);
+  }
+
+  .project-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-status {
+    margin-top: 0.25rem;
+    color: var(--m);
+    font-size: 0.9rem;
+  }
+
+  .stack-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+</style>
