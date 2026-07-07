@@ -1,11 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ProjectCard from "../components/ProjectsCard.astro";
 
-const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
+const DEV_TOKEN = import.meta.env.DEV_TOKEN;
 const GITHUB_USERNAME = "rjmlaird";
-const ORG_LOGIN = "YOUR_ORG";
+const ORG_LOGIN = "greenorbitspace";
 const USER_PROJECT_NUMBER = 1;
 const ORG_PROJECT_NUMBER = 1;
+const REPO_FIRST = 12;
 
 const query = `
   query(
@@ -20,6 +22,12 @@ const query = `
         title
         shortDescription
         url
+        repositories(first: 20) {
+          nodes {
+            nameWithOwner
+            url
+          }
+        }
         items(first: 10) {
           nodes {
             content {
@@ -59,6 +67,12 @@ const query = `
         title
         shortDescription
         url
+        repositories(first: 20) {
+          nodes {
+            nameWithOwner
+            url
+          }
+        }
         items(first: 10) {
           nodes {
             content {
@@ -78,38 +92,21 @@ const query = `
           }
         }
       }
-      repositories(first: $repoFirst, privacy: PUBLIC, orderBy: { field: PUSHED_AT, direction: DESC }) {
-        nodes {
-          name
-          nameWithOwner
-          description
-          url
-          homepageUrl
-          isFork
-          stargazerCount
-          primaryLanguage {
-            name
-          }
-        }
-      }
     }
   }
 `;
 
 let userProject = null;
-let userItems = [];
-let userRepositories = [];
 let orgProject = null;
-let orgItems = [];
-let orgRepositories = [];
 let projectError = null;
+let cards = [];
 
-if (GITHUB_TOKEN) {
+if (DEV_TOKEN) {
   try {
     const response = await fetch("https://api.github.com/graphql", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Authorization: `Bearer ${DEV_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -117,7 +114,7 @@ if (GITHUB_TOKEN) {
         variables: {
           login: GITHUB_USERNAME,
           number: USER_PROJECT_NUMBER,
-          repoFirst: 12,
+          repoFirst: REPO_FIRST,
           orgLogin: ORG_LOGIN,
           orgProjectNumber: ORG_PROJECT_NUMBER,
         },
@@ -130,28 +127,66 @@ if (GITHUB_TOKEN) {
       projectError = json.errors[0].message ?? "GitHub GraphQL query failed.";
     } else {
       userProject = json?.data?.user?.projectV2 ?? null;
-      userItems = (userProject?.items?.nodes ?? [])
-        .map((node) => node?.content)
-        .filter(Boolean);
-
-      userRepositories = (json?.data?.user?.repositories?.nodes ?? []).filter(
-        (repo) => repo && !repo.isFork
-      );
-
       orgProject = json?.data?.organization?.projectV2 ?? null;
-      orgItems = (orgProject?.items?.nodes ?? [])
+
+      const userItems = (userProject?.items?.nodes ?? [])
         .map((node) => node?.content)
         .filter(Boolean);
 
-      orgRepositories = (json?.data?.organization?.repositories?.nodes ?? []).filter(
+      const orgItems = (orgProject?.items?.nodes ?? [])
+        .map((node) => node?.content)
+        .filter(Boolean);
+
+      const userRepos = (json?.data?.user?.repositories?.nodes ?? []).filter(
         (repo) => repo && !repo.isFork
       );
+
+      cards = [
+        ...(userProject
+          ? [
+              {
+                id: 1,
+                title: userProject.title,
+                excerpt: userProject.shortDescription,
+                topics: ["Personal board"],
+                features: userProject.repositories?.nodes?.map((r) => r.nameWithOwner) ?? [],
+                url: userProject.url,
+                outcome: userItems.length ? `${userItems.length} items` : "No items",
+                variant: "teal",
+              },
+            ]
+          : []),
+        ...(orgProject
+          ? [
+              {
+                id: 2,
+                title: orgProject.title,
+                excerpt: orgProject.shortDescription,
+                topics: ["Organisation board"],
+                features: orgProject.repositories?.nodes?.map((r) => r.nameWithOwner) ?? [],
+                url: orgProject.url,
+                outcome: orgItems.length ? `${orgItems.length} items` : "No items",
+                variant: "violet",
+              },
+            ]
+          : []),
+        ...userRepos.map((repo, index) => ({
+          id: index + 3,
+          title: repo.name,
+          excerpt: repo.description ?? "",
+          topics: [repo.primaryLanguage?.name ?? "Code"],
+          features: repo.isFork ? ["Fork"] : [],
+          url: repo.homepageUrl || repo.url,
+          outcome: `${repo.stargazerCount} stars`,
+          variant: "coral",
+        })),
+      ];
     }
   } catch (err) {
     projectError = err instanceof Error ? err.message : "Unable to load project data.";
   }
 } else {
-  projectError = "Missing GITHUB_TOKEN.";
+  projectError = "Missing DEV_TOKEN.";
 }
 ---
 
@@ -165,73 +200,18 @@ if (GITHUB_TOKEN) {
     </p>
   </section>
 
-  <section class="section-tight">
-    <p class="eyebrow">Personal board</p>
-    <h2>{userProject ? userProject.title : "GitHub Project not available"}</h2>
-    {userProject?.shortDescription && <p class="body-text">{userProject.shortDescription}</p>}
-    {userProject && (
-      <div class="card" style="margin-top:1.5rem;">
-        <p><strong>Board:</strong> <a href={userProject.url} target="_blank" rel="noreferrer">Open in GitHub</a></p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
-          {userItems.map((item) => (
-            <li style="color:var(--m);">
-              {item?.url ? (
-                <a href={item.url} target="_blank" rel="noreferrer">{item?.title ?? "Untitled item"}</a>
-              ) : (
-                item?.title ?? "Untitled item"
-              )}
-            </li>
-          ))}
-        </ul>
+  {projectError ? (
+    <section class="section-tight">
+      <div class="card">
+        <p class="body-text">{projectError}</p>
       </div>
-    )}
-  </section>
+    </section>
+  ) : null}
 
   <section class="section-tight">
-    <p class="eyebrow">Organisation board</p>
-    <h2>{orgProject ? orgProject.title : "Organisation project not available"}</h2>
-    {orgProject?.shortDescription && <p class="body-text">{orgProject.shortDescription}</p>}
-    {orgProject && (
-      <div class="card" style="margin-top:1.5rem;">
-        <p><strong>Board:</strong> <a href={orgProject.url} target="_blank" rel="noreferrer">Open in GitHub</a></p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;">
-          {orgItems.map((item) => (
-            <li style="color:var(--m);">
-              {item?.url ? (
-                <a href={item.url} target="_blank" rel="noreferrer">{item?.title ?? "Untitled item"}</a>
-              ) : (
-                item?.title ?? "Untitled item"
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-  </section>
-
-  <section class="section-tight">
-    <p class="eyebrow">Open source</p>
-    <h2>Public repositories</h2>
-
-    <h3 style="margin-top:1rem;">Personal repositories</h3>
-    <div class="grid-3" style="margin-top:1rem;">
-      {userRepositories.map((repo) => (
-        <article class="card">
-          <h3>{repo.name}</h3>
-          {repo.description ? <p>{repo.description}</p> : <p>No description provided.</p>}
-          <a href={repo.url} class="card-link" target="_blank" rel="noreferrer">Repo →</a>
-        </article>
-      ))}
-    </div>
-
-    <h3 style="margin-top:2rem;">Organisation repositories</h3>
-    <div class="grid-3" style="margin-top:1rem;">
-      {orgRepositories.map((repo) => (
-        <article class="card">
-          <h3>{repo.name}</h3>
-          {repo.description ? <p>{repo.description}</p> : <p>No description provided.</p>}
-          <a href={repo.url} class="card-link" target="_blank" rel="noreferrer">Repo →</a>
-        </article>
+    <div class="grid-3">
+      {cards.map((project) => (
+        <ProjectCard project={project} />
       ))}
     </div>
   </section>

@@ -1,90 +1,151 @@
 ---
-interface Props {
-  title: string;
-  description: string;
-  href?: string;
+interface Project {
+  id?: number;
+  title?: string;
+  excerpt?: string;
+  summary?: string;
+  description?: string;
+  topic?: string;
+  topics?: string[];
+  tools?: string[];
+  features?: string[];
+  image?: string;
+  imageCredit?: string;
+  url?: string;
   github?: string;
-  status?: string;
-  stack?: string[];
-  featured?: boolean;
+  repository?: string;
+  live?: string;
+  variant?: "teal" | "violet" | "coral";
+  outcome?: string;
+
+  status?: "planned" | "in-progress" | "blocked" | "paused" | "done";
+  priority?: "low" | "medium" | "high";
+  phase?: string;
+  tasksTotal?: number;
+  tasksDone?: number;
+  tasksOpen?: number;
+  tasksBlocked?: number;
+  due?: string;
+  updated?: string;
 }
 
-const {
-  title,
-  description,
-  href,
-  github,
-  status,
-  stack = [],
-  featured = false,
-} = Astro.props;
+interface Props {
+  project?: Project;
+}
+
+const { project } = Astro.props as Props;
+const data = project ?? {};
+
+const number = data.id ? String(data.id).padStart(2, "0") : "";
+const title = data.title ?? "Untitled Project";
+const excerpt = data.excerpt ?? data.summary ?? data.description ?? "";
+const topic = data.topic ?? "";
+const topics = data.topics ?? data.tools ?? (topic ? [topic] : []);
+const features = data.features ?? [];
+const image = data.image ?? "";
+const imageCredit = data.imageCredit ?? "";
+const link = data.url || data.live || data.github || data.repository || "#";
+const variant = data.variant ?? "teal";
+const outcome = data.outcome ?? "";
+
+const status = data.status ?? "";
+const priority = data.priority ?? "";
+const phase = data.phase ?? "";
+const due = data.due ?? "";
+const updated = data.updated ?? "";
+
+const tasksDone = data.tasksDone ?? null;
+const tasksOpen = data.tasksOpen ?? null;
+const tasksBlocked = data.tasksBlocked ?? null;
+const tasksTotal =
+  data.tasksTotal ??
+  (tasksDone !== null || tasksOpen !== null || tasksBlocked !== null
+    ? (tasksDone ?? 0) + (tasksOpen ?? 0) + (tasksBlocked ?? 0)
+    : null);
+
+const statusLabel: Record<NonNullable<Project["status"]>, string> = {
+  planned: "Planned",
+  "in-progress": "In progress",
+  blocked: "Blocked",
+  paused: "Paused",
+  done: "Done",
+};
+
+const priorityLabel: Record<NonNullable<Project["priority"]>, string> = {
+  low: "Low priority",
+  medium: "Medium priority",
+  high: "High priority",
+};
 ---
 
-<article class:list={["card", { featured }]}>
-  <div class="project-head">
-    <div>
+<article class="pr pub">
+  <p class="pn">{number}</p>
+
+  {image ? (
+    <div class="pub-media pub-image">
+      <img src={image} alt={title} loading="lazy" />
+      {imageCredit && <span class="image-credit">{imageCredit}</span>}
+    </div>
+  ) : null}
+
+  <div class="pm">
+    <div class="pub-top">
       <h3>{title}</h3>
-      {status && <p class="project-status">{status}</p>}
+
+      {(status || phase || outcome) && (
+        <div class="meta-row">
+          {status && (
+            <span class={`status-pill status-${status}`}>
+              <span class="status-dot" aria-hidden="true"></span>
+              {statusLabel[status]}
+            </span>
+          )}
+
+          {phase && <span class="meta-pill">{phase}</span>}
+          {outcome && <span class={`client-badge ${variant}`}>{outcome}</span>}
+        </div>
+      )}
     </div>
 
-    {featured && <span class="pill">Featured</span>}
+    {excerpt && <p>{excerpt}</p>}
+
+    {(tasksTotal !== null || priority || due || updated) && (
+      <div class="stats-row">
+        {tasksTotal !== null && (
+          <span class="stat-pill">
+            {tasksDone ?? 0}/{tasksTotal} done
+          </span>
+        )}
+
+        {tasksOpen !== null && <span class="stat-pill">{tasksOpen} open</span>}
+        {tasksBlocked !== null && <span class="stat-pill">{tasksBlocked} blocked</span>}
+
+        {priority && (
+          <span class={`stat-pill priority-${priority}`}>
+            {priorityLabel[priority]}
+          </span>
+        )}
+
+        {due && <span class="stat-pill">Due {due}</span>}
+        {updated && <span class="stat-pill">Updated {updated}</span>}
+      </div>
+    )}
+
+    {(topics.length > 0 || features.length > 0) && (
+      <div class="pt">
+        {topics.map((t) => (
+          <span class="tag">{t}</span>
+        ))}
+
+        {features.map((feature) => (
+          <span class="tag">{feature}</span>
+        ))}
+      </div>
+    )}
   </div>
 
-  <p>{description}</p>
-
-  {stack.length > 0 && (
-    <ul class="stack-list" aria-label={`${title} stack`}>
-      {stack.map((item) => <li class="pill">{item}</li>)}
-    </ul>
-  )}
-
-  <div class="project-links">
-    {href && (
-      <a class="card-link" href={href} target="_blank" rel="noreferrer">
-        Live site →
-      </a>
-    )}
-    {github && (
-      <a class="card-link" href={github} target="_blank" rel="noreferrer">
-        Source code →
-      </a>
-    )}
-  </div>
+  <a href={link} class="pa" target="_blank" rel="noopener noreferrer">
+    <span class="pa-i">↗</span>
+    <span>View</span>
+  </a>
 </article>
-
-<style>
-  .featured {
-    border-color: var(--bm);
-    box-shadow: var(--shadow);
-  }
-
-  .project-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: start;
-    margin-bottom: 0.75rem;
-  }
-
-  .project-status {
-    margin-top: 0.25rem;
-    color: var(--m);
-    font-size: 0.9rem;
-  }
-
-  .stack-list {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 1rem 0 0;
-    padding: 0;
-  }
-
-  .project-links {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-  }
-</style>
