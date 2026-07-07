@@ -11,6 +11,13 @@
  * unreachable or rate-limited, so a GitHub hiccup can never break the build.
  */
 
+import languageColors from "../data/language-colors.json";
+
+export function getLanguageColor(name: string | null | undefined): string {
+  if (!name) return languageColors.Default;
+  return (languageColors as Record<string, string>)[name] ?? languageColors.Default;
+}
+
 const GITHUB_API = "https://api.github.com";
 export const GITHUB_USERNAME = "rjmlaird";
 export const GITHUB_ORGS = ["greenorbitdigital", "greenorbitspace", "spaceforneuro"];
@@ -44,7 +51,7 @@ export async function getGithubProfile(): Promise<any | null> {
 
 export async function getGithubRepos(): Promise<any[]> {
   const repos = await githubFetch<any[]>(
-    `/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated&type=owner`,
+    `/users/${GITHUB_USERNAME}/repos?per_page=100&sort=pushed&type=owner`,
     []
   );
   return repos.filter((r) => !r.private && !r.fork);
@@ -52,9 +59,73 @@ export async function getGithubRepos(): Promise<any[]> {
 
 export async function getGithubOrgRepos(): Promise<any[]> {
   const perOrg = await Promise.all(
-    GITHUB_ORGS.map((org) => githubFetch<any[]>(`/orgs/${org}/repos?per_page=100&sort=updated`, []))
+    GITHUB_ORGS.map((org) => githubFetch<any[]>(`/orgs/${org}/repos?per_page=100&sort=pushed`, []))
   );
   return perOrg.flat().filter((r) => !r.private);
+}
+
+/**
+ * Full org profiles (avatar, description, repo count) for the org badges/
+ * cards section — separate from getGithubOrgRepos, which just pulls repos.
+ */
+export async function getGithubOrgs(): Promise<any[]> {
+  const orgs = await Promise.all(
+    GITHUB_ORGS.map((org) => githubFetch<any | null>(`/orgs/${org}`, null))
+  );
+  return orgs.filter(Boolean);
+}
+
+/**
+ * Recent public activity (pushes, PRs, issues, releases, new repos) —
+ * GitHub's contributions calendar isn't available over the plain REST API
+ * (it needs GraphQL + auth), so this is the closest equivalent: the public
+ * events feed, summarised into readable lines.
+ */
+export async function getGithubActivity(): Promise<
+  { type: string; repo: string; summary: string; date: string; url: string }[]
+> {
+  const events = await githubFetch<any[]>(`/users/${GITHUB_USERNAME}/events/public?per_page=30`, []);
+
+  const describe = (e: any): string | null => {
+    const repo = e.repo?.name ?? "";
+    switch (e.type) {
+      case "PushEvent": {
+        const n = e.payload?.commits?.length ?? 0;
+        return n ? `Pushed ${n} commit${n === 1 ? "" : "s"} to ${repo}` : null;
+      }
+      case "CreateEvent":
+        return e.payload?.ref_type === "repository" ? `Created repository ${repo}` : null;
+      case "PullRequestEvent":
+        return `${e.payload?.action === "opened" ? "Opened" : e.payload?.action ?? "Updated"} a pull request on ${repo}`;
+      case "IssuesEvent":
+        return `${e.payload?.action === "opened" ? "Opened" : e.payload?.action ?? "Updated"} an issue on ${repo}`;
+      case "ReleaseEvent":
+        return `Published a release on ${repo}`;
+      case "PublicEvent":
+        return `Made ${repo} public`;
+      case "ForkEvent":
+        return `Forked ${repo}`;
+      case "WatchEvent":
+        return `Starred ${repo}`;
+      default:
+        return null;
+    }
+  };
+
+  return events
+    .map((e) => {
+      const summary = describe(e);
+      if (!summary) return null;
+      return {
+        type: e.type,
+        repo: e.repo?.name ?? "",
+        summary,
+        date: e.created_at,
+        url: `https://github.com/${e.repo?.name ?? ""}`,
+      };
+    })
+    .filter(Boolean)
+    .slice(0, 10) as { type: string; repo: string; summary: string; date: string; url: string }[];
 }
 
 /**

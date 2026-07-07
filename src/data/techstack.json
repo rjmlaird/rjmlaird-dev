@@ -1,0 +1,71 @@
+{
+  "categories": [
+    {
+      "name": "Languages",
+      "items": [
+        { "name": "HTML", "url": "https://developer.mozilla.org/en-US/docs/Web/HTML", "logo": "html5", "color": "E34F26" },
+        { "name": "CSS", "url": "https://developer.mozilla.org/en-US/docs/Web/CSS", "logo": "css3", "color": "1572B6" },
+        { "name": "JavaScript", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript", "logo": "javascript", "color": "F7DF1E", "logoColor": "black" },
+        { "name": "TypeScript", "url": "https://www.typescriptlang.org/", "logo": "typescript", "color": "3178C6" },
+        { "name": "Python", "url": "https://www.python.org/", "logo": "python", "color": "3776AB" },
+        { "name": "SQL", "url": "https://en.wikipedia.org/wiki/SQL", "logo": "postgresql", "color": "4169E1" }
+      ]
+    },
+    {
+      "name": "Frontend",
+      "items": [
+        { "name": "Astro", "url": "https://astro.build/", "logo": "astro", "color": "FF5D01" },
+        { "name": "Tailwind CSS", "url": "https://tailwindcss.com/", "logo": "tailwindcss", "color": "06B6D4" },
+        { "name": "Streamlit", "url": "https://streamlit.io/", "logo": "streamlit", "color": "FF4B4B" }
+      ]
+    },
+    {
+      "name": "Backend & APIs",
+      "items": [
+        { "name": "Node.js", "url": "https://nodejs.org/", "logo": "node.js", "color": "339933" },
+        { "name": "REST API", "url": "https://restfulapi.net/", "logo": "fastapi", "color": "6B7A96" },
+        { "name": "Notion API", "url": "https://developers.notion.com/", "logo": "notion", "color": "000000" },
+        { "name": "HubSpot API", "url": "https://developers.hubspot.com/", "logo": "hubspot", "color": "FF7A59" },
+        { "name": "Stripe API", "url": "https://stripe.com/docs/api", "logo": "stripe", "color": "635BFF" },
+        { "name": "GitHub API", "url": "https://docs.github.com/en/rest", "logo": "github", "color": "181717" },
+        { "name": "Zotero API", "url": "https://www.zotero.org/support/dev/web_api/v3/start", "logo": "zotero", "color": "CC2936" }
+      ]
+    },
+    {
+      "name": "Data & Analytics",
+      "items": [
+        { "name": "Pandas", "url": "https://pandas.pydata.org/", "logo": "pandas", "color": "150458" },
+        { "name": "Skyfield", "url": "https://rhodesmill.org/skyfield/", "logo": "python", "color": "3776AB" },
+        { "name": "GA4", "url": "https://marketingplatform.google.com/about/analytics/", "logo": "googleanalytics", "color": "E37400" },
+        { "name": "Looker Studio", "url": "https://lookerstudio.google.com/", "logo": "looker", "color": "4285F4" }
+      ]
+    },
+    {
+      "name": "Cloud & Deployment",
+      "items": [
+        { "name": "Cloudflare", "url": "https://www.cloudflare.com/", "logo": "cloudflare", "color": "F38020" },
+        { "name": "GitHub Pages", "url": "https://pages.github.com/", "logo": "github", "color": "222222" }
+      ]
+    },
+    {
+      "name": "Tooling",
+      "items": [
+        { "name": "Git", "url": "https://git-scm.com/", "logo": "git", "color": "F05032" },
+        { "name": "GitHub", "url": "https://github.com/", "logo": "github", "color": "181717" },
+        { "name": "npm", "url": "https://www.npmjs.com/", "logo": "npm", "color": "CB3837" },
+        { "name": "Vite", "url": "https://vitejs.dev/", "logo": "vite", "color": "646CFF" },
+        { "name": "VS Code", "url": "https://code.visualstudio.com/", "logo": "visualstudiocode", "color": "007ACC" },
+        { "name": "Cursor", "url": "https://cursor.com/", "logo": "cursor", "color": "000000" }
+      ]
+    },
+    {
+      "name": "Content & Config",
+      "items": [
+        { "name": "Notion", "url": "https://www.notion.so/", "logo": "notion", "color": "000000" },
+        { "name": "Markdown", "url": "https://www.markdownguide.org/", "logo": "markdown", "color": "000000" },
+        { "name": "JSON", "url": "https://www.json.org/", "logo": "json", "color": "000000" },
+        { "name": "YAML", "url": "https://yaml.org/", "logo": "yaml", "color": "CB171E" }
+      ]
+    }
+  ]
+}
