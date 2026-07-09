@@ -10,9 +10,7 @@ import Nav from "../components/Nav.astro";
       <header class="about-hero">
         <p class="eyebrow">About</p>
 
-        <h1 class="about-title">
-          Hi, I’m Ryan Laird.
-        </h1>
+        <h1 class="about-title">Hi, I’m Ryan Laird.</h1>
 
         <p class="about-lead">
           I’m a digital developer and science communicator building accessible,
@@ -47,18 +45,21 @@ import Nav from "../components/Nav.astro";
               alt="GitHub profile"
             />
           </a>
+
           <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
             <img
               src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"
               alt="LinkedIn profile"
             />
           </a>
+
           <a href="https://astro.build/" target="_blank" rel="noreferrer">
             <img
               src="https://img.shields.io/badge/Builder-Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white"
               alt="Astro"
             />
           </a>
+
           <a href="https://react.dev/" target="_blank" rel="noreferrer">
             <img
               src="https://img.shields.io/badge/UI-React-61DAFB?style=for-the-badge&logo=react&logoColor=111827"
@@ -207,4 +208,36 @@ import Nav from "../components/Nav.astro";
 
   .readme-card {
     padding: 1.25rem 1.25rem 1.3rem;
-    border: 1px solid color-mix(in srgb, currentColor 12%, transpa
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 1rem;
+    background: color-mix(in srgb, currentColor 3%, transparent);
+  }
+
+  .readme-card h2 {
+    margin: 0 0 0.8rem;
+    font-size: 1.15rem;
+  }
+
+  .readme-card p {
+    margin: 0 0 0.9rem;
+    line-height: 1.7;
+  }
+
+  .readme-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  .readme-card ul {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.6rem;
+    line-height: 1.6;
+  }
+
+  .readme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+</style>
