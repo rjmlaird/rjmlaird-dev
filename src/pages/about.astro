@@ -51,4 +51,119 @@ import Nav from "../components/Nav.astro";
         <article class="readme-card">
           <h2>Current interests</h2>
           <ul>
-            <li>Science communica
+            <li>Science communication, especially space and climate topics.</li>
+            <li>Front-end architecture and maintainable design systems.</li>
+            <li>Open source tooling, productivity scripts, and data enrichment.</li>
+            <li>Cooking, meal planning, and practical vegetarian recipes.</li>
+            <li>Better ways to present technical and scientific information.</li>
+          </ul>
+        </article>
+      </div>
+
+      <section class="readme-card">
+        <h2>Tooling</h2>
+        <div class="badge-cloud" aria-label="Tool badges">
+          <img src="https://img.shields.io/badge/Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white" alt="Astro" />
+          <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=111827" alt="React" />
+          <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+          <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+          <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions" />
+          <img src="https://img.shields.io/badge/Cloudflare%20Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare Workers" />
+        </div>
+      </section>
+
+      <section class="readme-card">
+        <h2>Values</h2>
+        <p>
+          I try to build work that is useful, legible, and welcoming. That means
+          thoughtful copy, strong hierarchy, reliable patterns, and a focus on
+          accessibility from the start rather than as an afterthought.
+        </p>
+      </section>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .about-page {
+    padding-block: clamp(4rem, 7vw, 7rem);
+  }
+
+  .about-shell {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .about-hero {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    opacity: 0.72;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 4.8vw, 4rem);
+    line-height: 1.02;
+  }
+
+  .about-lead {
+    margin: 0;
+    max-width: 72ch;
+    font-size: 1.08rem;
+    line-height: 1.7;
+    opacity: 0.94;
+  }
+
+  .badge-row,
+  .badge-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .badge-row img,
+  .badge-cloud img {
+    display: block;
+    height: 28px;
+    width: auto;
+  }
+
+  .readme-card {
+    padding: 1.25rem;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 1rem;
+    background: color-mix(in srgb, currentColor 3%, transparent);
+  }
+
+  .readme-card h2 {
+    margin: 0 0 0.8rem;
+    font-size: 1.15rem;
+  }
+
+  .readme-card p {
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  .readme-card ul {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.6rem;
+    line-height: 1.6;
+  }
+
+  .readme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+</style>
