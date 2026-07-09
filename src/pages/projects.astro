@@ -2,9 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import ProjectCard from "../components/ProjectsCard.astro";
-import { getSecret } from "astro:env/server";
 
-const DEV_TOKEN = getSecret("DEV_TOKEN");
+const DEV_TOKEN = import.meta.env.DEV_TOKEN;
 const GITHUB_USERNAME = "rjmlaird";
 const ORG_LOGIN = "greenorbitspace";
 const USER_PROJECT_NUMBER = 1;
@@ -111,9 +110,7 @@ const buildProjectCard = (
   };
 };
 
-if (!DEV_TOKEN) {
-  projectError = "Missing DEV_TOKEN.";
-} else {
+if (DEV_TOKEN) {
   try {
     const response = await fetch("https://api.github.com/graphql", {
       method: "POST",
@@ -155,231 +152,10 @@ if (!DEV_TOKEN) {
   } catch (err) {
     projectError = err instanceof Error ? err.message : "Unable to load project data.";
   }
+} else {
+  projectError = "Missing DEV_TOKEN.";
 }
 
 const scopeList = [...new Set(cards.map((card) => card.scope).filter(Boolean))].sort();
 const languageList = [...new Set(cards.map((card) => card.language).filter(Boolean))].sort();
 ---
-
-<Layout title="Projects">
-  <Nav />
-  <section class="section publications-gallery">
-    <div class="container pg-shell">
-      <header class="pg-head">
-        <p class="eyebrow">Projects</p>
-
-        <h1 class="ch fade">
-          Selected work across <em>personal, org, and language</em>
-        </h1>
-
-        <div class="pg-intro">
-          <p class="pg-lead">
-            GitHub Projects grouped by personal and organisation boards, with language filters for the repository context behind each project.
-          </p>
-
-          <p class="pg-note">
-            Use the filters to narrow by board type and language. Each card links to the project board.
-          </p>
-        </div>
-
-        <div class="pg-filters" aria-label="Project filters">
-          <label class="filter-field" for="scopeSelect">
-            <span>Scope</span>
-            <select id="scopeSelect">
-              <option value="all">All projects</option>
-              {scopeList.map((scope) => (
-                <option value={scope}>{scope === "personal" ? "Personal" : "Organisation"}</option>
-              ))}
-            </select>
-          </label>
-
-          <label class="filter-field" for="languageSelect">
-            <span>Language</span>
-            <select id="languageSelect">
-              <option value="all">All languages</option>
-              {languageList.map((language) => (
-                <option value={language}>{language}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </header>
-
-      {projectError ? (
-        <div class="card">
-          <p class="body-text">{projectError}</p>
-        </div>
-      ) : null}
-
-      <div class="pg-grid" id="projectGrid">
-        {cards.map((project, index) => (
-          <div
-            class:list={[
-              "publication-item",
-              index % 2 === 0 ? "publication-item--space" : "publication-item--tight",
-            ]}
-            data-scope={project.scope ?? ""}
-            data-language={project.language ?? ""}
-          >
-            <ProjectCard project={{ ...project, id: project.id ?? index + 1 }} />
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-</Layout>
-
-<script>
-  const norm = (s) => (s || "").toLowerCase().trim();
-
-  const scopeSelect = document.getElementById("scopeSelect");
-  const languageSelect = document.getElementById("languageSelect");
-  const items = document.querySelectorAll("#projectGrid .publication-item");
-
-  const applyFilters = () => {
-    const activeScope = norm(scopeSelect?.value || "all");
-    const activeLanguage = norm(languageSelect?.value || "all");
-
-    items.forEach((el) => {
-      const scope = norm(el.dataset.scope);
-      const language = norm(el.dataset.language);
-
-      const scopeOk = activeScope === "all" || scope === activeScope;
-      const languageOk = activeLanguage === "all" || language === activeLanguage;
-
-      el.hidden = !(scopeOk && languageOk);
-    });
-  };
-
-  scopeSelect?.addEventListener("change", applyFilters);
-  languageSelect?.addEventListener("change", applyFilters);
-  applyFilters();
-</script>
-
-<style>
-  .publications-gallery {
-    padding-block: clamp(4rem, 7vw, 7rem);
-  }
-
-  .pg-shell {
-    display: grid;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-  }
-
-  .pg-head {
-    max-width: 78rem;
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .eyebrow {
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.78rem;
-    opacity: 0.72;
-  }
-
-  .pg-head h1 {
-    margin: 0;
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    line-height: 1.05;
-  }
-
-  .pg-intro {
-    max-width: 72ch;
-    padding: 1rem 1.25rem;
-    border-left: 3px solid color-mix(in srgb, currentColor 28%, transparent);
-    background: color-mix(in srgb, currentColor 4%, transparent);
-    border-radius: 0.9rem;
-    display: grid;
-    gap: 0.85rem;
-  }
-
-  .pg-lead,
-  .pg-note {
-    margin: 0;
-    line-height: 1.65;
-  }
-
-  .pg-lead {
-    font-size: 1.08rem;
-    font-weight: 500;
-    opacity: 0.96;
-  }
-
-  .pg-note {
-    font-size: 0.98rem;
-    opacity: 0.84;
-  }
-
-  .pg-filters {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  .filter-field {
-    display: grid;
-    gap: 0.45rem;
-  }
-
-  .filter-field span {
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    opacity: 0.7;
-  }
-
-  .filter-field select {
-    width: 100%;
-    padding: 0.75rem 0.9rem;
-    border-radius: 0.9rem;
-    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
-    background: transparent;
-    color: currentColor;
-    font: inherit;
-  }
-
-  .filter-field select option {
-    color: #111;
-    background: #fff;
-  }
-
-  .pg-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    align-items: stretch;
-  }
-
-  .publication-item {
-    display: flex;
-    width: 100%;
-  }
-
-  .publication-item--space {
-    margin-block-start: 0.25rem;
-  }
-
-  .publication-item--tight {
-    margin-block-start: 0;
-  }
-
-  .publication-item[hidden] {
-    display: none;
-  }
-
-  :global(.pub) {
-    width: 100%;
-  }
-
-  @media (max-width: 640px) {
-    :global(.pub-media) {
-      aspect-ratio: 4 / 3;
-      margin-bottom: 0.85rem;
-    }
-  }
-</style>
