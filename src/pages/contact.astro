@@ -1,0 +1,204 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+
+const links = [
+  {
+    label: "Email",
+    value: "dev@mail.rjmlaird.co.uk",
+    href: "mailto:dev@mail.rjmlaird.co.uk",
+  },
+  {
+    label: "GitHub",
+    value: "github.com/rjmlaird",
+    href: "https://github.com/rjmlaird",
+  },
+  {
+    label: "LinkedIn",
+    value: "linkedin.com/in/ryanlaird",
+    href: "https://www.linkedin.com/",
+  },
+  {
+    label: "Website",
+    value: "rjmlaird.co.uk",
+    href: "https://rjmlaird.co.uk",
+  },
+];
+---
+
+<Layout title="Contact Ryan Laird">
+  <Nav />
+
+  <main class="contact-page">
+    <section class="container contact-shell">
+      <header class="contact-hero">
+        <p class="eyebrow">Contact</p>
+        <h1>Let’s make something useful.</h1>
+        <p class="contact-lead">
+          I’m open to web projects, science communication work, collaborative
+          builds, accessibility reviews, and thoughtful conversations about
+          digital content.
+        </p>
+      </header>
+
+      <div class="contact-grid">
+        <section class="contact-card">
+          <h2>Best ways to reach me</h2>
+          <div class="contact-links">
+            {links.map((item) => (
+              <a class="contact-link" href={item.href} target={item.href.startsWith("mailto:") ? undefined : "_blank"} rel={item.href.startsWith("mailto:") ? undefined : "noreferrer"}>
+                <span class="contact-label">{item.label}</span>
+                <span class="contact-value">{item.value}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section class="contact-card">
+          <h2>What to contact me about</h2>
+          <ul class="contact-list">
+            <li>Frontend development and Astro/React builds.</li>
+            <li>Content design, CMS structure, and digital publishing.</li>
+            <li>Accessibility, inclusive communication, and audits.</li>
+            <li>Science communication and technical storytelling.</li>
+            <li>Automation, scripting, and data-driven workflows.</li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="contact-card">
+        <h2>Quick note</h2>
+        <p>
+          If you’re reaching out about a project, a short summary and any useful
+          links will help me respond quickly. I’m especially happy to discuss
+          clear, maintainable, and accessible approaches.
+        </p>
+      </section>
+
+      <section class="contact-card">
+        <h2>Elsewhere</h2>
+        <div class="badge-row" aria-label="Social links">
+          <a href="https://github.com/rjmlaird" target="_blank" rel="noreferrer">
+            <img src="https://img.shields.io/badge/GitHub-rjmlaird-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+          </a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
+            <img src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+          </a>
+          <a href="https://rjmlaird.co.uk" target="_blank" rel="noreferrer">
+            <img src="https://img.shields.io/badge/Website-rjmlaird.co.uk-0f766e?style=for-the-badge&logo=astro&logoColor=white" alt="Website" />
+          </a>
+        </div>
+      </section>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .contact-page {
+    padding-block: clamp(4rem, 7vw, 7rem);
+  }
+
+  .contact-shell {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .contact-hero {
+    display: grid;
+    gap: 1rem;
+    max-width: 72rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    opacity: 0.72;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1.02;
+  }
+
+  .contact-lead {
+    margin: 0;
+    max-width: 70ch;
+    font-size: 1.08rem;
+    line-height: 1.7;
+    opacity: 0.94;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .contact-card {
+    padding: 1.25rem;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 1rem;
+    background: color-mix(in srgb, currentColor 3%, transparent);
+  }
+
+  .contact-card h2 {
+    margin: 0 0 0.85rem;
+    font-size: 1.15rem;
+  }
+
+  .contact-links {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .contact-link {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+    text-decoration: none;
+    color: inherit;
+    background: color-mix(in srgb, currentColor 2%, transparent);
+  }
+
+  .contact-label {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    opacity: 0.72;
+  }
+
+  .contact-value {
+    font-weight: 600;
+  }
+
+  .contact-list {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.6rem;
+    line-height: 1.6;
+  }
+
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .badge-row img {
+    display: block;
+    height: 28px;
+    width: auto;
+  }
+
+  .contact-card p {
+    margin: 0;
+    line-height: 1.7;
+  }
+</style>
