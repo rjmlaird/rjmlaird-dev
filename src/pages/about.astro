@@ -1,261 +1,210 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
-import {
-  getGithubProfile,
-  getGithubRepos,
-  getGithubOrgRepos,
-  getGithubOrgs,
-  getGithubActivity,
-  aggregateLanguages,
-  getLanguageColor,
-  GITHUB_USERNAME,
-} from "../lib/github";
-import techStack from "../data/techstack.json";
-
-const [profile, ownRepos, orgRepos, orgs, activity] = await Promise.all([
-  getGithubProfile(),
-  getGithubRepos(),
-  getGithubOrgRepos(),
-  getGithubOrgs(),
-  getGithubActivity(),
-]);
-
-const allRepos = [...ownRepos, ...orgRepos];
-const languages = aggregateLanguages(allRepos).slice(0, 8);
-
-// Sorted by last commit (pushed_at), most recent first.
-const repos = allRepos
-  .slice()
-  .sort((a: any, b: any) => new Date(b.pushed_at ?? 0).getTime() - new Date(a.pushed_at ?? 0).getTime())
-  .slice(0, 24);
-
-const repoLanguages = [...new Set(repos.map((r: any) => r.language).filter(Boolean))] as string[];
-
-function timeAgo(dateStr: string): string {
-  const diffMs = Date.now() - new Date(dateStr).getTime();
-  const days = Math.floor(diffMs / 86400000);
-  if (days < 1) return "today";
-  if (days === 1) return "yesterday";
-  if (days < 30) return `${days}d ago`;
-  const months = Math.floor(days / 30);
-  if (months < 12) return `${months}mo ago`;
-  return `${Math.floor(months / 12)}y ago`;
-}
-
-function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?: string }): string {
-  const label = encodeURIComponent(item.name);
-  const logo = item.logo ? `&logo=${encodeURIComponent(item.logo)}` : "";
-  const logoColor = `&logoColor=${item.logoColor ?? "white"}`;
-  return `https://img.shields.io/badge/-${label}-${item.color}?style=flat-square${logo}${logoColor}`;
-}
 ---
 
-<Layout>
+<Layout title="About">
   <Nav />
-  <header>
-    <a href="/" class="logo">RJM<span>L</span> · Dev</a>
-    <a href="https://rjmlaird.co.uk" class="home-link">rjmlaird.co.uk ↗</a>
-  </header>
+  <section class="section about-page">
+    <div class="container about-shell">
+      <header class="about-hero">
+        <p class="eyebrow">About</p>
 
-  <main>
-    <p class="sl">Dev & open source</p>
-    <h1 class="ch">Code, <em>live from GitHub</em></h1>
-    <p class="lede">
-      Profile, organisations, activity, repositories, and tech stack — all pulled directly
-      from the GitHub API at build time, so this updates itself automatically.
-    </p>
+        <h1 class="about-title">
+          Hi, I’m Ryan Laird.
+        </h1>
 
-    {/* PROFILE */}
-    {profile ? (
-      <div class="dev-hero">
-        <img class="dev-avatar" src={profile.avatar_url} alt={profile.name ?? GITHUB_USERNAME} loading="lazy" />
-        <div>
-          <p class="dev-name">{profile.name ?? GITHUB_USERNAME}</p>
-          {profile.bio && <p class="dev-bio">{profile.bio}</p>}
-          <div class="dev-badges">
-            <a href={profile.html_url} target="_blank" rel="noopener noreferrer">
-              <img src={`https://img.shields.io/badge/-%40${GITHUB_USERNAME}-141B29?style=flat-square&logo=github&logoColor=EDEAE3`} alt="GitHub profile" />
-            </a>
-            <img src={`https://img.shields.io/github/followers/${GITHUB_USERNAME}?style=flat-square&label=followers&color=00C2A8&labelColor=141B29`} alt="GitHub followers" />
-            <img src={`https://img.shields.io/badge/public_repos-${profile.public_repos ?? 0}-141B29?style=flat-square&labelColor=141B29&color=A78BFA`} alt="Public repos" />
-            <img src={`https://img.shields.io/badge/repos_shown-${repos.length}-141B29?style=flat-square&labelColor=141B29&color=F5A623`} alt="Repos shown here" />
-          </div>
+        <p class="about-lead">
+          I’m a digital developer and science communicator building accessible,
+          data-driven web experiences with Astro, React, TypeScript, and Python.
+          I care about clear communication, inclusive design, and making complex
+          ideas feel understandable.
+        </p>
+
+        <div class="badge-row" aria-label="Profile badges">
+          <img
+            src="https://img.shields.io/badge/Role-Digital%20Developer-7c3aed?style=for-the-badge&logo=code&logoColor=white"
+            alt="Role: Digital Developer"
+          />
+          <img
+            src="https://img.shields.io/badge/Stack-Astro%20%7C%20React%20%7C%20TypeScript-0f766e?style=for-the-badge&logo=astro&logoColor=white"
+            alt="Stack: Astro, React, TypeScript"
+          />
+          <img
+            src="https://img.shields.io/badge/Focus-Accessibility%20%26%20Inclusive%20Design-2563eb?style=for-the-badge&logo=accessibility&logoColor=white"
+            alt="Focus: Accessibility and Inclusive Design"
+          />
+          <img
+            src="https://img.shields.io/badge/Location-UK-111827?style=for-the-badge&logo=unitedkingdom&logoColor=white"
+            alt="Location: UK"
+          />
+        </div>
+
+        <div class="badge-row secondary" aria-label="Professional badges">
+          <a href="https://github.com/rjmlaird" target="_blank" rel="noreferrer">
+            <img
+              src="https://img.shields.io/badge/GitHub-rjmlaird-181717?style=for-the-badge&logo=github&logoColor=white"
+              alt="GitHub profile"
+            />
+          </a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
+            <img
+              src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"
+              alt="LinkedIn profile"
+            />
+          </a>
+          <a href="https://astro.build/" target="_blank" rel="noreferrer">
+            <img
+              src="https://img.shields.io/badge/Builder-Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white"
+              alt="Astro"
+            />
+          </a>
+          <a href="https://react.dev/" target="_blank" rel="noreferrer">
+            <img
+              src="https://img.shields.io/badge/UI-React-61DAFB?style=for-the-badge&logo=react&logoColor=111827"
+              alt="React"
+            />
+          </a>
+        </div>
+      </header>
+
+      <div class="readme-card">
+        <h2>Overview</h2>
+        <p>
+          I build websites and content systems that balance design, performance,
+          and maintainability. My work often spans frontend development,
+          structured content, automation, API integration, and science-focused
+          communication.
+        </p>
+        <p>
+          I like projects where the details matter: semantic HTML, clean data
+          models, accessible components, and enough visual polish to make the
+          whole thing feel considered.
+        </p>
+      </div>
+
+      <div class="readme-grid">
+        <article class="readme-card">
+          <h2>What I work on</h2>
+          <ul>
+            <li>Astro and React sites with reusable component systems.</li>
+            <li>TypeScript-backed content pipelines and structured schemas.</li>
+            <li>API integrations for project, CV, and research data.</li>
+            <li>Automation for content syncing, assets, and research workflows.</li>
+            <li>Accessible interfaces and clearer digital communication.</li>
+          </ul>
+        </article>
+
+        <article class="readme-card">
+          <h2>Current interests</h2>
+          <ul>
+            <li>Science communication, especially space and climate topics.</li>
+            <li>Front-end architecture and maintainable design systems.</li>
+            <li>Open source tooling, productivity scripts, and data enrichment.</li>
+            <li>Cooking, meal planning, and practical vegetarian recipes.</li>
+            <li>Better ways to present technical and scientific information.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="readme-card">
+        <h2>Tooling</h2>
+        <div class="badge-cloud" aria-label="Tool badges">
+          <img src="https://img.shields.io/badge/Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white" alt="Astro" />
+          <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=111827" alt="React" />
+          <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+          <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111827" alt="JavaScript" />
+          <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+          <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+          <img src="https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white" alt="pnpm" />
+          <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions" />
+          <img src="https://img.shields.io/badge/Cloudflare%20Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare Workers" />
+          <img src="https://img.shields.io/badge/Zotero-CC2936?style=for-the-badge&logo=zotero&logoColor=white" alt="Zotero" />
         </div>
       </div>
-    ) : (
-      <p class="empty-state">
-        GitHub's API is being rate-limited or unreachable from this build — visit
-        <a href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer"> github.com/{GITHUB_USERNAME}</a> directly in the meantime.
-      </p>
-    )}
 
-    {/* ORGANISATIONS */}
-    {orgs.length > 0 && (
-      <>
-        <p class="tlbl">Organisations</p>
-        <div class="org-grid">
-          {orgs.map((org: any) => (
-            <a class="org-card" href={org.html_url} target="_blank" rel="noopener noreferrer">
-              <img class="org-avatar" src={org.avatar_url} alt="" loading="lazy" />
-              <div>
-                <p class="org-name">{org.login}</p>
-                <p class="org-meta">{org.public_repos ?? 0} public repos</p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </>
-    )}
+      <div class="readme-card">
+        <h2>Values</h2>
+        <p>
+          I try to build work that is useful, legible, and welcoming. That means
+          thoughtful copy, strong hierarchy, reliable patterns, and a focus on
+          accessibility from the start rather than as an afterthought.
+        </p>
+        <p>
+          I also value systems that are easy to maintain over time. Good tooling
+          should make the work smoother, not more fragile.
+        </p>
+      </div>
 
-
-    {/* LANGUAGES */}
-    {languages.length > 0 && (
-      <>
-        <p class="tlbl">Languages across repos</p>
-        <div class="lang-list">
-          {languages.map((lang) => (
-            <div class="lang-row">
-              <span class="lang-name">
-                <span class="lang-dot" style={`background:${getLanguageColor(lang.name)}`}></span>
-                {lang.name}
-              </span>
-              <div class="lang-track">
-                <div class="lang-fill" style={`width:${lang.pct}%;background:${getLanguageColor(lang.name)}`}></div>
-              </div>
-              <span class="lang-pct">{lang.pct}%</span>
-            </div>
-          ))}
-        </div>
-      </>
-    )}
-
-    {/* TECH STACK */}
-    <p class="tlbl">Tech stack</p>
-    <div class="stack-groups">
-      {techStack.categories.map((cat) => (
-        <div>
-          <p class="stack-cat">{cat.name}</p>
-          <div class="stack-badges">
-            {cat.items.map((item) => (
-              <a href={item.url} target="_blank" rel="noopener noreferrer">
-                <img src={badgeUrl(item)} alt={item.name} loading="lazy" />
-              </a>
-            ))}
-          </div>
-        </div>
-      ))}
+      <div class="readme-card">
+        <h2>Now</h2>
+        <p>
+          I’m refining my personal and professional web presence, building
+          project showcases, and keeping my content workflow modular so it can
+          grow with me.
+        </p>
+      </div>
     </div>
-
-    {/* REPOS */}
-    <p class="tlbl">Repositories, by last commit</p>
-
-    {repoLanguages.length > 0 && (
-      <div class="filters" id="filters">
-        <button class="filter-btn active" data-filter="all">All</button>
-        {repoLanguages.map((lang) => (
-          <button class="filter-btn" data-filter={lang}>
-            <span class="filter-dot" style={`background:${getLanguageColor(lang)}`}></span>
-            {lang}
-          </button>
-        ))}
-      </div>
-    )}
-
-    {repos.length ? (
-      <div class="repo-grid" id="repo-grid">
-        {repos.map((repo: any) => {
-          const [owner, name] = (repo.full_name ?? `${GITHUB_USERNAME}/${repo.name}`).split("/");
-          const isOrg = owner !== GITHUB_USERNAME;
-          return (
-            <article class="repo-card" data-language={repo.language ?? ""}>
-              {isOrg && <p class="repo-org">{owner}</p>}
-              <a href={repo.html_url} class="repo-name" target="_blank" rel="noopener noreferrer">
-                {repo.name} <span>↗</span>
-              </a>
-              {repo.description && <p class="repo-desc">{repo.description}</p>}
-              {repo.topics?.length > 0 && (
-                <div class="repo-topics">
-                  {repo.topics.slice(0, 5).map((topic: string) => (
-                    <span class="tag">{topic}</span>
-                  ))}
-                </div>
-              )}
-              <div class="repo-meta-row">
-                {repo.language && (
-                  <span class="repo-lang">
-                    <span class="lang-dot" style={`background:${getLanguageColor(repo.language)}`}></span>
-                    {repo.language}
-                  </span>
-                )}
-                <span class="repo-updated">Updated {timeAgo(repo.pushed_at)}</span>
-              </div>
-              <div class="repo-links">
-                <a href={repo.html_url} target="_blank" rel="noopener noreferrer">View repo ↗</a>
-                {repo.homepage && (
-                  <a href={repo.homepage} class="repo-live" target="_blank" rel="noopener noreferrer">Live build ↗</a>
-                )}
-              </div>
-              <div class="repo-badges">
-                <img src={`https://img.shields.io/github/stars/${owner}/${name}?style=flat-square&labelColor=141B29&color=F5A623`} alt="Stars" />
-                <img src={`https://img.shields.io/github/last-commit/${owner}/${name}?style=flat-square&labelColor=141B29&color=00C2A8`} alt="Last commit" />
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    ) : (
-      <p class="empty-state">
-        No repos came back from GitHub for this build (likely a rate limit) — the full, live
-        list is always at
-        <a href={`https://github.com/${GITHUB_USERNAME}?tab=repositories`} target="_blank" rel="noopener noreferrer"> github.com/{GITHUB_USERNAME}</a>.
-      </p>
-    )}
-
-    <a href={`https://github.com/${GITHUB_USERNAME}?tab=repositories`} class="gh-cta" target="_blank" rel="noopener noreferrer">
-      All repositories on GitHub ↗
-    </a>
-
-
-    {/* ACTIVITY */}
-    <p class="tlbl">Recent activity</p>
-    {activity.length ? (
-      <div class="activity-list">
-        {activity.map((event) => (
-          <div class="activity-row">
-            <a href={event.url} target="_blank" rel="noopener noreferrer">{event.summary}</a>
-            <span class="activity-date">{timeAgo(event.date)}</span>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p class="empty-state">No recent public activity came back from GitHub for this build.</p>
-    )}
-    <div class="activity-graph">
-      <img src={`https://ghchart.rshah.org/00C2A8/${GITHUB_USERNAME}`} alt={`${GITHUB_USERNAME}'s GitHub contribution graph`} loading="lazy" />
-    </div>
-    <p class="activity-note">Contribution graph via a third-party visualisation (ghchart.rshah.org) — if it's ever down, the live version is always on the GitHub profile itself.</p>
-  </main>
-
-  <footer>
-    <p>Ryan Laird · <a href="https://rjmlaird.co.uk">rjmlaird.co.uk</a> · <a href={`https://github.com/${GITHUB_USERNAME}`}>GitHub</a></p>
-  </footer>
-
-  <script is:inline>
-    const buttons = document.querySelectorAll("#filters .filter-btn");
-    const cards = document.querySelectorAll("#repo-grid .repo-card");
-
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const filter = btn.dataset.filter;
-        buttons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        cards.forEach((card) => {
-          const lang = card.dataset.language;
-          card.classList.toggle("is-hidden", !(filter === "all" || lang === filter));
-        });
-      });
-    });
-  </script>
+  </section>
 </Layout>
+
+<style>
+  .about-page {
+    padding-block: clamp(4rem, 7vw, 7rem);
+  }
+
+  .about-shell {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .about-hero {
+    display: grid;
+    gap: 1rem;
+    max-width: 78rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    opacity: 0.72;
+  }
+
+  .about-title {
+    margin: 0;
+    font-size: clamp(2.25rem, 4.8vw, 4rem);
+    line-height: 1.02;
+  }
+
+  .about-lead {
+    margin: 0;
+    max-width: 72ch;
+    font-size: 1.08rem;
+    line-height: 1.7;
+    opacity: 0.94;
+  }
+
+  .badge-row,
+  .badge-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .badge-row img,
+  .badge-cloud img {
+    display: block;
+    height: 28px;
+    width: auto;
+  }
+
+  .badge-row.secondary {
+    margin-top: 0.25rem;
+  }
+
+  .readme-card {
+    padding: 1.25rem 1.25rem 1.3rem;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transpa
