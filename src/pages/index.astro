@@ -7,7 +7,7 @@ import Nav from "../components/Nav.astro";
   <Nav />
 
   <main class="home">
-    <section class="hero container">
+    <section id="hero" class="hero container">
       <p class="eyebrow">Digital developer · science communicator</p>
       <h1>Building accessible, data-driven web experiences.</h1>
       <p class="lede">
@@ -20,6 +20,7 @@ import Nav from "../components/Nav.astro";
         <a class="btn primary" href="/projects/">View projects</a>
         <a class="btn secondary" href="/about/">About me</a>
         <a class="btn secondary" href="/open-source/">Open source</a>
+        <a class="btn secondary" href="/contact/">Contact</a>
       </div>
     </section>
 
@@ -154,4 +155,33 @@ import Nav from "../components/Nav.astro";
     padding: 1.15rem;
     border-radius: 1rem;
     border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-    background: color-mix(in srgb, currentColor
+    background: color-mix(in srgb, currentColor 3%, transparent);
+  }
+
+  .panel h3,
+  .feature-card strong {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 1.05rem;
+  }
+
+  .panel p,
+  .feature-card p {
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .feature-card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .feature-kicker {
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+</style>
