@@ -3,7 +3,7 @@ import nav from "../data/nav.json";
 ---
 
 <nav class="site-nav" aria-label="Primary">
-  <a href="#hero" class="logo">RJM<span>L</span></a>
+  <a href="/" class="logo">RJM<span>L</span></a>
 
   <button
     class="nav-toggle"
@@ -21,11 +21,13 @@ import nav from "../data/nav.json";
 
   <div class="nav-panel" id="primary-menu">
     <ul class="nl">
-      {nav.map((item) => (
-        <li>
-          <a href={`/${item.id}`}>{item.label}</a>
-        </li>
-      ))}
+      {
+        nav.map((item) => (
+          <li>
+            <a href={`/${item.id}`}>{item.label}</a>
+          </li>
+        ))
+      }
     </ul>
 
     <div class="nr">
@@ -36,17 +38,17 @@ import nav from "../data/nav.json";
 </nav>
 
 <script>
-  const nav = document.querySelector(".site-nav");
+  const navEl = document.querySelector(".site-nav");
   const toggle = document.querySelector(".nav-toggle");
   const panel = document.querySelector("#primary-menu");
 
   const closeMenu = () => {
-    nav?.classList.remove("is-open");
+    navEl?.classList.remove("is-open");
     toggle?.setAttribute("aria-expanded", "false");
   };
 
   toggle?.addEventListener("click", () => {
-    const isOpen = nav?.classList.toggle("is-open");
+    const isOpen = navEl?.classList.toggle("is-open");
     toggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
   });
 
@@ -54,14 +56,13 @@ import nav from "../data/nav.json";
     link.addEventListener("click", closeMenu);
   });
 
-  document.addEventListener("click", (event) => {
-    const target = event.target;
-    if (!nav || !toggle || !panel) return;
-    if (!nav.contains(target)) closeMenu();
-  });
-
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeMenu();
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (navEl && target instanceof Node && !navEl.contains(target)) closeMenu();
   });
 </script>
 
@@ -111,7 +112,6 @@ import nav from "../data/nav.json";
     height: 2px;
     border-radius: 999px;
     background: currentColor;
-    transition: transform 160ms ease, opacity 160ms ease;
   }
 
   .nav-panel {
