@@ -3,64 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import ProjectCard from "../components/ProjectsCard.astro";
 
-const DEV_TOKEN = import.meta.env.DEV_TOKEN;
-const GITHUB_USERNAME = "rjmlaird";
-const ORG_LOGIN = "greenorbitspace";
-const USER_PROJECT_NUMBER = 1;
-const ORG_PROJECT_NUMBER = 1;
-
-const graphql = `
-  query(
-    $login: String!
-    $number: Int!
-    $orgLogin: String!
-    $orgProjectNumber: Int!
-  ) {
-    user(login: $login) {
-      projectV2(number: $number) {
-        title
-        shortDescription
-        url
-        repositories(first: 20) {
-          nodes {
-            primaryLanguage {
-              name
-            }
-          }
-        }
-        items(first: 10) {
-          nodes {
-            content {
-              __typename
-            }
-          }
-        }
-      }
-    }
-    organization(login: $orgLogin) {
-      projectV2(number: $orgProjectNumber) {
-        title
-        shortDescription
-        url
-        repositories(first: 20) {
-          nodes {
-            primaryLanguage {
-              name
-            }
-          }
-        }
-        items(first: 10) {
-          nodes {
-            content {
-              __typename
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 type Card = {
   id: number;
   title?: string;
@@ -75,87 +17,224 @@ type Card = {
   organization?: string;
 };
 
-let projectError = "";
-let cards: Card[] = [];
-
-const buildProjectCard = (
-  project: any,
-  id: number,
-  variant: Card["variant"],
-  phase: string,
-  scope: Card["scope"],
-  organization: string
-): Card => {
-  const items = (project?.items?.nodes ?? [])
-    .map((node: any) => node?.content)
-    .filter(Boolean);
-
-  const language =
-    (project?.repositories?.nodes ?? [])
-      .map((repo: any) => repo?.primaryLanguage?.name)
-      .find(Boolean) || "Project";
-
-  return {
-    id,
-    title: project?.title ?? "Untitled Project",
-    excerpt: project?.shortDescription ?? "",
-    url: project?.url ?? "",
-    outcome: items.length ? `${items.length} items` : "No items",
-    variant,
-    status: items.length ? "in-progress" : "planned",
-    phase,
-    scope,
-    language,
-    organization,
-  };
-};
-
-if (DEV_TOKEN) {
-  try {
-    const response = await fetch("https://api.github.com/graphql", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${DEV_TOKEN}`,
-        "Content-Type": "application/json",
-        "User-Agent": "Astro Projects Page",
-      },
-      body: JSON.stringify({
-        query: graphql,
-        variables: {
-          login: GITHUB_USERNAME,
-          number: USER_PROJECT_NUMBER,
-          orgLogin: ORG_LOGIN,
-          orgProjectNumber: ORG_PROJECT_NUMBER,
-        },
-      }),
-    });
-
-    const json = await response.json();
-
-    if (!response.ok || json?.errors?.length) {
-      projectError =
-        json?.errors?.[0]?.message ??
-        `GitHub GraphQL request failed (${response.status}).`;
-    } else {
-      const userProject = json?.data?.user?.projectV2 ?? null;
-      const orgProject = json?.data?.organization?.projectV2 ?? null;
-
-      cards = [
-        ...(userProject
-          ? [buildProjectCard(userProject, 1, "teal", "Personal board", "personal", "")]
-          : []),
-        ...(orgProject
-          ? [buildProjectCard(orgProject, 2, "violet", "Organisation board", "org", "Green Orbit Digital")]
-          : []),
-      ];
-    }
-  } catch (err) {
-    projectError = err instanceof Error ? err.message : "Unable to load project data.";
-  }
-} else {
-  projectError = "Missing DEV_TOKEN.";
-}
+const cards: Card[] = [
+  {
+    id: 1,
+    title: "Personal board",
+    excerpt: "Selected personal work, experiments, and portfolio pieces.",
+    url: "/projects/",
+    variant: "teal",
+    status: "in-progress",
+    phase: "Curated showcase",
+    outcome: "Active",
+    scope: "personal",
+    language: "Astro",
+    organization: "",
+  },
+  {
+    id: 2,
+    title: "Organisation board",
+    excerpt: "Projects and coordination work for Green Orbit Digital.",
+    url: "/projects/",
+    variant: "violet",
+    status: "in-progress",
+    phase: "Organisation work",
+    outcome: "Active",
+    scope: "org",
+    language: "TypeScript",
+    organization: "Green Orbit Digital",
+  },
+];
 
 const scopeList = [...new Set(cards.map((card) => card.scope).filter(Boolean))].sort();
 const languageList = [...new Set(cards.map((card) => card.language).filter(Boolean))].sort();
 ---
+
+<Layout title="Projects">
+  <Nav />
+
+  <main class="projects-page">
+    <section class="container projects-shell">
+      <header class="projects-head">
+        <p class="eyebrow">Projects</p>
+        <h1>Selected work across personal and organisation boards.</h1>
+        <p class="lede">
+          A curated set of projects, with filters for board type and language
+          context.
+        </p>
+
+        <div class="filters" aria-label="Project filters">
+          <label class="filter-field" for="scopeSelect">
+            <span>Scope</span>
+            <select id="scopeSelect">
+              <option value="all">All projects</option>
+              {scopeList.map((scope) => (
+                <option value={scope}>{scope === "personal" ? "Personal" : "Organisation"}</option>
+              ))}
+            </select>
+          </label>
+
+          <label class="filter-field" for="languageSelect">
+            <span>Language</span>
+            <select id="languageSelect">
+              <option value="all">All languages</option>
+              {languageList.map((language) => (
+                <option value={language}>{language}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </header>
+
+      <div class="pg-grid" id="projectGrid">
+        {cards.map((project, index) => (
+          <div
+            class:list={[
+              "publication-item",
+              index % 2 === 0 ? "publication-item--space" : "publication-item--tight",
+            ]}
+            data-scope={project.scope ?? ""}
+            data-language={project.language ?? ""}
+          >
+            <ProjectCard project={{ ...project, id: project.id ?? index + 1 }} />
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  const norm = (s) => (s || "").toLowerCase().trim();
+
+  const scopeSelect = document.getElementById("scopeSelect");
+  const languageSelect = document.getElementById("languageSelect");
+  const items = document.querySelectorAll("#projectGrid .publication-item");
+
+  const applyFilters = () => {
+    const activeScope = norm(scopeSelect?.value || "all");
+    const activeLanguage = norm(languageSelect?.value || "all");
+
+    items.forEach((el) => {
+      const scope = norm(el.dataset.scope);
+      const language = norm(el.dataset.language);
+
+      const scopeOk = activeScope === "all" || scope === activeScope;
+      const languageOk = activeLanguage === "all" || language === activeLanguage;
+
+      el.hidden = !(scopeOk && languageOk);
+    });
+  };
+
+  scopeSelect?.addEventListener("change", applyFilters);
+  languageSelect?.addEventListener("change", applyFilters);
+  applyFilters();
+</script>
+
+<style>
+  .projects-page {
+    padding-block: clamp(4rem, 7vw, 7rem);
+  }
+
+  .projects-shell {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .projects-head {
+    display: grid;
+    gap: 1rem;
+    max-width: 72rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    opacity: 0.72;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4.8vw, 4rem);
+    line-height: 1.02;
+  }
+
+  .lede {
+    margin: 0;
+    max-width: 68ch;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    opacity: 0.92;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .filter-field {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .filter-field span {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+  }
+
+  .filter-field select {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    background: transparent;
+    color: currentColor;
+    font: inherit;
+  }
+
+  .filter-field select option {
+    color: #111;
+    background: #fff;
+  }
+
+  .pg-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .publication-item {
+    display: flex;
+    width: 100%;
+  }
+
+  .publication-item--space {
+    margin-block-start: 0.25rem;
+  }
+
+  .publication-item--tight {
+    margin-block-start: 0;
+  }
+
+  .publication-item[hidden] {
+    display: none;
+  }
+
+  :global(.pub) {
+    width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    :global(.pub-media) {
+      aspect-ratio: 4 / 3;
+      margin-bottom: 0.85rem;
+    }
+  }
+</style>
