@@ -2,8 +2,9 @@
 import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import ProjectCard from "../components/ProjectsCard.astro";
+import { getSecret } from "astro:env/server";
 
-const DEV_TOKEN = import.meta.env.DEV_TOKEN;
+const DEV_TOKEN = getSecret("DEV_TOKEN");
 const GITHUB_USERNAME = "rjmlaird";
 const ORG_LOGIN = "greenorbitspace";
 const USER_PROJECT_NUMBER = 1;
@@ -110,13 +111,16 @@ const buildProjectCard = (
   };
 };
 
-if (DEV_TOKEN) {
+if (!DEV_TOKEN) {
+  projectError = "Missing DEV_TOKEN.";
+} else {
   try {
     const response = await fetch("https://api.github.com/graphql", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${DEV_TOKEN}`,
         "Content-Type": "application/json",
+        "User-Agent": "Astro Projects Page",
       },
       body: JSON.stringify({
         query: graphql,
@@ -132,7 +136,9 @@ if (DEV_TOKEN) {
     const json = await response.json();
 
     if (!response.ok || json?.errors?.length) {
-      projectError = json?.errors?.[0]?.message ?? `GitHub GraphQL request failed (${response.status}).`;
+      projectError =
+        json?.errors?.[0]?.message ??
+        `GitHub GraphQL request failed (${response.status}).`;
     } else {
       const userProject = json?.data?.user?.projectV2 ?? null;
       const orgProject = json?.data?.organization?.projectV2 ?? null;
@@ -149,8 +155,6 @@ if (DEV_TOKEN) {
   } catch (err) {
     projectError = err instanceof Error ? err.message : "Unable to load project data.";
   }
-} else {
-  projectError = "Missing DEV_TOKEN.";
 }
 
 const scopeList = [...new Set(cards.map((card) => card.scope).filter(Boolean))].sort();
