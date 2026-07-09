@@ -1,5 +1,6 @@
 [
   { "id": "about", "label": "About" },
   { "id": "projects", "label": "Projects" },
-  { "id": "open-source", "label": "Open source" }
+  { "id": "open-source", "label": "Open source" },
+  {"id": "contact", "label": "Contact"}
 ]
