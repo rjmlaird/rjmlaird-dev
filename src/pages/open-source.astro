@@ -25,7 +25,6 @@ const [profile, ownRepos, orgRepos, orgs, activity] = await Promise.all([
 const allRepos = [...ownRepos, ...orgRepos];
 const languages = aggregateLanguages(allRepos).slice(0, 8);
 
-// Sorted by last commit (pushed_at), most recent first.
 const repos = allRepos
   .slice()
   .sort((a: any, b: any) => new Date(b.pushed_at ?? 0).getTime() - new Date(a.pushed_at ?? 0).getTime())
@@ -52,48 +51,45 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
 }
 ---
 
-<Layout>
+<Layout title="Open Source">
   <Nav />
-  <header>
-    <a href="/" class="logo">RJM<span>L</span> · Dev</a>
-    <a href="https://rjmlaird.co.uk" class="home-link">rjmlaird.co.uk ↗</a>
-  </header>
 
-  <main>
-    <p class="sl">Dev & open source</p>
-    <h1 class="ch">Code, <em>live from GitHub</em></h1>
-    <p class="lede">
-      Profile, organisations, activity, repositories, and tech stack — all pulled directly
-      from the GitHub API at build time, so this updates itself automatically.
-    </p>
+  <main class="open-source-page">
+    <header class="container page-head">
+      <p class="sl">Open source</p>
+      <h1>Code, live from GitHub</h1>
+      <p class="lede">
+        Profile, organisations, activity, repositories, and tech stack — all
+        pulled directly from GitHub at build time.
+      </p>
+    </header>
 
-    {/* PROFILE */}
-    {profile ? (
-      <div class="dev-hero">
-        <img class="dev-avatar" src={profile.avatar_url} alt={profile.name ?? GITHUB_USERNAME} loading="lazy" />
-        <div>
-          <p class="dev-name">{profile.name ?? GITHUB_USERNAME}</p>
-          {profile.bio && <p class="dev-bio">{profile.bio}</p>}
-          <div class="dev-badges">
-            <a href={profile.html_url} target="_blank" rel="noopener noreferrer">
-              <img src={`https://img.shields.io/badge/-%40${GITHUB_USERNAME}-141B29?style=flat-square&logo=github&logoColor=EDEAE3`} alt="GitHub profile" />
-            </a>
-            <img src={`https://img.shields.io/github/followers/${GITHUB_USERNAME}?style=flat-square&label=followers&color=00C2A8&labelColor=141B29`} alt="GitHub followers" />
-            <img src={`https://img.shields.io/badge/public_repos-${profile.public_repos ?? 0}-141B29?style=flat-square&labelColor=141B29&color=A78BFA`} alt="Public repos" />
-            <img src={`https://img.shields.io/badge/repos_shown-${repos.length}-141B29?style=flat-square&labelColor=141B29&color=F5A623`} alt="Repos shown here" />
+    <section class="container">
+      {profile ? (
+        <div class="dev-hero">
+          <img class="dev-avatar" src={profile.avatar_url} alt={profile.name ?? GITHUB_USERNAME} loading="lazy" />
+          <div>
+            <p class="dev-name">{profile.name ?? GITHUB_USERNAME}</p>
+            {profile.bio && <p class="dev-bio">{profile.bio}</p>}
+            <div class="dev-badges">
+              <a href={profile.html_url} target="_blank" rel="noopener noreferrer">
+                <img src={`https://img.shields.io/badge/-%40${GITHUB_USERNAME}-141B29?style=flat-square&logo=github&logoColor=EDEAE3`} alt="GitHub profile" />
+              </a>
+              <img src={`https://img.shields.io/github/followers/${GITHUB_USERNAME}?style=flat-square&label=followers&color=00C2A8&labelColor=141B29`} alt="GitHub followers" />
+              <img src={`https://img.shields.io/badge/public_repos-${profile.public_repos ?? 0}-141B29?style=flat-square&labelColor=141B29&color=A78BFA`} alt="Public repos" />
+              <img src={`https://img.shields.io/badge/repos_shown-${repos.length}-141B29?style=flat-square&labelColor=141B29&color=F5A623`} alt="Repos shown here" />
+            </div>
           </div>
         </div>
-      </div>
-    ) : (
-      <p class="empty-state">
-        GitHub's API is being rate-limited or unreachable from this build — visit
-        <a href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer"> github.com/{GITHUB_USERNAME}</a> directly in the meantime.
-      </p>
-    )}
+      ) : (
+        <p class="empty-state">
+          GitHub's API is currently unavailable from this build.
+        </p>
+      )}
+    </section>
 
-    {/* ORGANISATIONS */}
     {orgs.length > 0 && (
-      <>
+      <section class="container">
         <p class="tlbl">Organisations</p>
         <div class="org-grid">
           {orgs.map((org: any) => (
@@ -106,13 +102,11 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
             </a>
           ))}
         </div>
-      </>
+      </section>
     )}
 
-
-    {/* LANGUAGES */}
     {languages.length > 0 && (
-      <>
+      <section class="container">
         <p class="tlbl">Languages across repos</p>
         <div class="lang-list">
           {languages.map((lang) => (
@@ -128,135 +122,111 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
             </div>
           ))}
         </div>
-      </>
+      </section>
     )}
 
-    {/* TECH STACK */}
-    <p class="tlbl">Tech stack</p>
-    <div class="stack-groups">
-      {techStack.categories.map((cat) => (
-        <div>
-          <p class="stack-cat">{cat.name}</p>
-          <div class="stack-badges">
-            {cat.items.map((item) => (
-              <a href={item.url} target="_blank" rel="noopener noreferrer">
-                <img src={badgeUrl(item)} alt={item.name} loading="lazy" />
-              </a>
-            ))}
+    <section class="container">
+      <p class="tlbl">Tech stack</p>
+      <div class="stack-groups">
+        {techStack.categories.map((cat) => (
+          <div>
+            <p class="stack-cat">{cat.name}</p>
+            <div class="stack-badges">
+              {cat.items.map((item) => (
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  <img src={badgeUrl(item)} alt={item.name} loading="lazy" />
+                </a>
+              ))}
+            </div>
           </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="container">
+      <p class="tlbl">Repositories, by last commit</p>
+
+      {repoLanguages.length > 0 && (
+        <div class="filters" id="filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          {repoLanguages.map((lang) => (
+            <button class="filter-btn" data-filter={lang}>
+              <span class="filter-dot" style={`background:${getLanguageColor(lang)}`}></span>
+              {lang}
+            </button>
+          ))}
         </div>
-      ))}
-    </div>
+      )}
 
-    {/* REPOS */}
-    <p class="tlbl">Repositories, by last commit</p>
-
-    {repoLanguages.length > 0 && (
-      <div class="filters" id="filters">
-        <button class="filter-btn active" data-filter="all">All</button>
-        {repoLanguages.map((lang) => (
-          <button class="filter-btn" data-filter={lang}>
-            <span class="filter-dot" style={`background:${getLanguageColor(lang)}`}></span>
-            {lang}
-          </button>
-        ))}
-      </div>
-    )}
-
-    {repos.length ? (
-      <div class="repo-grid" id="repo-grid">
-        {repos.map((repo: any) => {
-          const [owner, name] = (repo.full_name ?? `${GITHUB_USERNAME}/${repo.name}`).split("/");
-          const isOrg = owner !== GITHUB_USERNAME;
-          return (
-            <article class="repo-card" data-language={repo.language ?? ""}>
-              {isOrg && <p class="repo-org">{owner}</p>}
-              <a href={repo.html_url} class="repo-name" target="_blank" rel="noopener noreferrer">
-                {repo.name} <span>↗</span>
-              </a>
-              {repo.description && <p class="repo-desc">{repo.description}</p>}
-              {repo.topics?.length > 0 && (
-                <div class="repo-topics">
-                  {repo.topics.slice(0, 5).map((topic: string) => (
-                    <span class="tag">{topic}</span>
-                  ))}
+      {repos.length ? (
+        <div class="repo-grid" id="repo-grid">
+          {repos.map((repo: any) => {
+            const [owner, name] = (repo.full_name ?? `${GITHUB_USERNAME}/${repo.name}`).split("/");
+            const isOrg = owner !== GITHUB_USERNAME;
+            return (
+              <article class="repo-card" data-language={repo.language ?? ""}>
+                {isOrg && <p class="repo-org">{owner}</p>}
+                <a href={repo.html_url} class="repo-name" target="_blank" rel="noopener noreferrer">
+                  {repo.name} <span>↗</span>
+                </a>
+                {repo.description && <p class="repo-desc">{repo.description}</p>}
+                {repo.topics?.length > 0 && (
+                  <div class="repo-topics">
+                    {repo.topics.slice(0, 5).map((topic: string) => (
+                      <span class="tag">{topic}</span>
+                    ))}
+                  </div>
+                )}
+                <div class="repo-meta-row">
+                  {repo.language && (
+                    <span class="repo-lang">
+                      <span class="lang-dot" style={`background:${getLanguageColor(repo.language)}`}></span>
+                      {repo.language}
+                    </span>
+                  )}
+                  <span class="repo-updated">Updated {timeAgo(repo.pushed_at)}</span>
                 </div>
-              )}
-              <div class="repo-meta-row">
-                {repo.language && (
-                  <span class="repo-lang">
-                    <span class="lang-dot" style={`background:${getLanguageColor(repo.language)}`}></span>
-                    {repo.language}
-                  </span>
-                )}
-                <span class="repo-updated">Updated {timeAgo(repo.pushed_at)}</span>
-              </div>
-              <div class="repo-links">
-                <a href={repo.html_url} target="_blank" rel="noopener noreferrer">View repo ↗</a>
-                {repo.homepage && (
-                  <a href={repo.homepage} class="repo-live" target="_blank" rel="noopener noreferrer">Live build ↗</a>
-                )}
-              </div>
-              <div class="repo-badges">
-                <img src={`https://img.shields.io/github/stars/${owner}/${name}?style=flat-square&labelColor=141B29&color=F5A623`} alt="Stars" />
-                <img src={`https://img.shields.io/github/last-commit/${owner}/${name}?style=flat-square&labelColor=141B29&color=00C2A8`} alt="Last commit" />
-              </div>
-            </article>
-          );
-        })}
+                <div class="repo-links">
+                  <a href={repo.html_url} target="_blank" rel="noopener noreferrer">View repo ↗</a>
+                  {repo.homepage && (
+                    <a href={repo.homepage} class="repo-live" target="_blank" rel="noopener noreferrer">Live build ↗</a>
+                  )}
+                </div>
+                <div class="repo-badges">
+                  <img src={`https://img.shields.io/github/stars/${owner}/${name}?style=flat-square&labelColor=141B29&color=F5A623`} alt="Stars" />
+                  <img src={`https://img.shields.io/github/last-commit/${owner}/${name}?style=flat-square&labelColor=141B29&color=00C2A8`} alt="Last commit" />
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p class="empty-state">No repos came back from GitHub for this build.</p>
+      )}
+
+      <a href={`https://github.com/${GITHUB_USERNAME}?tab=repositories`} class="gh-cta" target="_blank" rel="noopener noreferrer">
+        All repositories on GitHub ↗
+      </a>
+    </section>
+
+    <section class="container">
+      <p class="tlbl">Recent activity</p>
+      {activity.length ? (
+        <div class="activity-list">
+          {activity.map((event) => (
+            <div class="activity-row">
+              <a href={event.url} target="_blank" rel="noopener noreferrer">{event.summary}</a>
+              <span class="activity-date">{timeAgo(event.date)}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-state">No recent public activity came back from GitHub for this build.</p>
+      )}
+
+      <div class="activity-graph">
+        <img src={`https://ghchart.rshah.org/00C2A8/${GITHUB_USERNAME}`} alt={`${GITHUB_USERNAME}'s GitHub contribution graph`} loading="lazy" />
       </div>
-    ) : (
-      <p class="empty-state">
-        No repos came back from GitHub for this build (likely a rate limit) — the full, live
-        list is always at
-        <a href={`https://github.com/${GITHUB_USERNAME}?tab=repositories`} target="_blank" rel="noopener noreferrer"> github.com/{GITHUB_USERNAME}</a>.
-      </p>
-    )}
-
-    <a href={`https://github.com/${GITHUB_USERNAME}?tab=repositories`} class="gh-cta" target="_blank" rel="noopener noreferrer">
-      All repositories on GitHub ↗
-    </a>
-
-
-    {/* ACTIVITY */}
-    <p class="tlbl">Recent activity</p>
-    {activity.length ? (
-      <div class="activity-list">
-        {activity.map((event) => (
-          <div class="activity-row">
-            <a href={event.url} target="_blank" rel="noopener noreferrer">{event.summary}</a>
-            <span class="activity-date">{timeAgo(event.date)}</span>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p class="empty-state">No recent public activity came back from GitHub for this build.</p>
-    )}
-    <div class="activity-graph">
-      <img src={`https://ghchart.rshah.org/00C2A8/${GITHUB_USERNAME}`} alt={`${GITHUB_USERNAME}'s GitHub contribution graph`} loading="lazy" />
-    </div>
-    <p class="activity-note">Contribution graph via a third-party visualisation (ghchart.rshah.org) — if it's ever down, the live version is always on the GitHub profile itself.</p>
+    </section>
   </main>
-
-  <footer>
-    <p>Ryan Laird · <a href="https://rjmlaird.co.uk">rjmlaird.co.uk</a> · <a href={`https://github.com/${GITHUB_USERNAME}`}>GitHub</a></p>
-  </footer>
-
-  <script is:inline>
-    const buttons = document.querySelectorAll("#filters .filter-btn");
-    const cards = document.querySelectorAll("#repo-grid .repo-card");
-
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const filter = btn.dataset.filter;
-        buttons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        cards.forEach((card) => {
-          const lang = card.dataset.language;
-          card.classList.toggle("is-hidden", !(filter === "all" || lang === filter));
-        });
-      });
-    });
-  </script>
 </Layout>
