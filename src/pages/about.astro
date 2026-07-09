@@ -3,15 +3,14 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 ---
 
-<Layout title="About">
+<Layout title="About Ryan Laird">
   <Nav />
-  <section class="section about-page">
-    <div class="container about-shell">
+
+  <main class="about-page">
+    <section class="container about-shell">
       <header class="about-hero">
         <p class="eyebrow">About</p>
-
-        <h1 class="about-title">Hi, I’m Ryan Laird.</h1>
-
+        <h1>Hi, I’m Ryan Laird.</h1>
         <p class="about-lead">
           I’m a digital developer and science communicator building accessible,
           data-driven web experiences with Astro, React, TypeScript, and Python.
@@ -20,56 +19,14 @@ import Nav from "../components/Nav.astro";
         </p>
 
         <div class="badge-row" aria-label="Profile badges">
-          <img
-            src="https://img.shields.io/badge/Role-Digital%20Developer-7c3aed?style=for-the-badge&logo=code&logoColor=white"
-            alt="Role: Digital Developer"
-          />
-          <img
-            src="https://img.shields.io/badge/Stack-Astro%20%7C%20React%20%7C%20TypeScript-0f766e?style=for-the-badge&logo=astro&logoColor=white"
-            alt="Stack: Astro, React, TypeScript"
-          />
-          <img
-            src="https://img.shields.io/badge/Focus-Accessibility%20%26%20Inclusive%20Design-2563eb?style=for-the-badge&logo=accessibility&logoColor=white"
-            alt="Focus: Accessibility and Inclusive Design"
-          />
-          <img
-            src="https://img.shields.io/badge/Location-UK-111827?style=for-the-badge&logo=unitedkingdom&logoColor=white"
-            alt="Location: UK"
-          />
-        </div>
-
-        <div class="badge-row secondary" aria-label="Professional badges">
-          <a href="https://github.com/rjmlaird" target="_blank" rel="noreferrer">
-            <img
-              src="https://img.shields.io/badge/GitHub-rjmlaird-181717?style=for-the-badge&logo=github&logoColor=white"
-              alt="GitHub profile"
-            />
-          </a>
-
-          <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
-            <img
-              src="https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"
-              alt="LinkedIn profile"
-            />
-          </a>
-
-          <a href="https://astro.build/" target="_blank" rel="noreferrer">
-            <img
-              src="https://img.shields.io/badge/Builder-Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white"
-              alt="Astro"
-            />
-          </a>
-
-          <a href="https://react.dev/" target="_blank" rel="noreferrer">
-            <img
-              src="https://img.shields.io/badge/UI-React-61DAFB?style=for-the-badge&logo=react&logoColor=111827"
-              alt="React"
-            />
-          </a>
+          <img src="https://img.shields.io/badge/Role-Digital%20Developer-7c3aed?style=for-the-badge&logo=code&logoColor=white" alt="Role: Digital Developer" />
+          <img src="https://img.shields.io/badge/Stack-Astro%20%7C%20React%20%7C%20TypeScript-0f766e?style=for-the-badge&logo=astro&logoColor=white" alt="Stack: Astro, React, TypeScript" />
+          <img src="https://img.shields.io/badge/Focus-Accessibility%20%26%20Inclusive%20Design-2563eb?style=for-the-badge&logo=accessibility&logoColor=white" alt="Focus: Accessibility and Inclusive Design" />
+          <img src="https://img.shields.io/badge/Location-UK-111827?style=for-the-badge&logo=unitedkingdom&logoColor=white" alt="Location: UK" />
         </div>
       </header>
 
-      <div class="readme-card">
+      <section class="readme-card">
         <h2>Overview</h2>
         <p>
           I build websites and content systems that balance design, performance,
@@ -77,12 +34,7 @@ import Nav from "../components/Nav.astro";
           structured content, automation, API integration, and science-focused
           communication.
         </p>
-        <p>
-          I like projects where the details matter: semantic HTML, clean data
-          models, accessible components, and enough visual polish to make the
-          whole thing feel considered.
-        </p>
-      </div>
+      </section>
 
       <div class="readme-grid">
         <article class="readme-card">
@@ -99,145 +51,4 @@ import Nav from "../components/Nav.astro";
         <article class="readme-card">
           <h2>Current interests</h2>
           <ul>
-            <li>Science communication, especially space and climate topics.</li>
-            <li>Front-end architecture and maintainable design systems.</li>
-            <li>Open source tooling, productivity scripts, and data enrichment.</li>
-            <li>Cooking, meal planning, and practical vegetarian recipes.</li>
-            <li>Better ways to present technical and scientific information.</li>
-          </ul>
-        </article>
-      </div>
-
-      <div class="readme-card">
-        <h2>Tooling</h2>
-        <div class="badge-cloud" aria-label="Tool badges">
-          <img src="https://img.shields.io/badge/Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white" alt="Astro" />
-          <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=111827" alt="React" />
-          <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-          <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111827" alt="JavaScript" />
-          <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-          <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
-          <img src="https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white" alt="pnpm" />
-          <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions" />
-          <img src="https://img.shields.io/badge/Cloudflare%20Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare Workers" />
-          <img src="https://img.shields.io/badge/Zotero-CC2936?style=for-the-badge&logo=zotero&logoColor=white" alt="Zotero" />
-        </div>
-      </div>
-
-      <div class="readme-card">
-        <h2>Values</h2>
-        <p>
-          I try to build work that is useful, legible, and welcoming. That means
-          thoughtful copy, strong hierarchy, reliable patterns, and a focus on
-          accessibility from the start rather than as an afterthought.
-        </p>
-        <p>
-          I also value systems that are easy to maintain over time. Good tooling
-          should make the work smoother, not more fragile.
-        </p>
-      </div>
-
-      <div class="readme-card">
-        <h2>Now</h2>
-        <p>
-          I’m refining my personal and professional web presence, building
-          project showcases, and keeping my content workflow modular so it can
-          grow with me.
-        </p>
-      </div>
-    </div>
-  </section>
-</Layout>
-
-<style>
-  .about-page {
-    padding-block: clamp(4rem, 7vw, 7rem);
-  }
-
-  .about-shell {
-    display: grid;
-    gap: 1.5rem;
-  }
-
-  .about-hero {
-    display: grid;
-    gap: 1rem;
-    max-width: 78rem;
-  }
-
-  .eyebrow {
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.78rem;
-    opacity: 0.72;
-  }
-
-  .about-title {
-    margin: 0;
-    font-size: clamp(2.25rem, 4.8vw, 4rem);
-    line-height: 1.02;
-  }
-
-  .about-lead {
-    margin: 0;
-    max-width: 72ch;
-    font-size: 1.08rem;
-    line-height: 1.7;
-    opacity: 0.94;
-  }
-
-  .badge-row,
-  .badge-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .badge-row img,
-  .badge-cloud img {
-    display: block;
-    height: 28px;
-    width: auto;
-  }
-
-  .badge-row.secondary {
-    margin-top: 0.25rem;
-  }
-
-  .readme-card {
-    padding: 1.25rem 1.25rem 1.3rem;
-    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-    border-radius: 1rem;
-    background: color-mix(in srgb, currentColor 3%, transparent);
-  }
-
-  .readme-card h2 {
-    margin: 0 0 0.8rem;
-    font-size: 1.15rem;
-  }
-
-  .readme-card p {
-    margin: 0 0 0.9rem;
-    line-height: 1.7;
-  }
-
-  .readme-card p:last-child {
-    margin-bottom: 0;
-  }
-
-  .readme-card ul {
-    margin: 0;
-    padding-left: 1.15rem;
-    display: grid;
-    gap: 0.6rem;
-    line-height: 1.6;
-  }
-
-  .readme-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1rem;
-  }
-</style>
+            <li>Science communica
