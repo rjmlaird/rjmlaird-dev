@@ -3,6 +3,64 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import ProjectCard from "../components/ProjectsCard.astro";
 
+const DEV_TOKEN = import.meta.env.DEV_TOKEN;
+const GITHUB_USERNAME = "rjmlaird";
+const ORG_LOGIN = "greenorbitspace";
+const USER_PROJECT_NUMBER = 1;
+const ORG_PROJECT_NUMBER = 1;
+
+const graphql = `
+  query(
+    $login: String!
+    $number: Int!
+    $orgLogin: String!
+    $orgProjectNumber: Int!
+  ) {
+    user(login: $login) {
+      projectV2(number: $number) {
+        title
+        shortDescription
+        url
+        repositories(first: 20) {
+          nodes {
+            primaryLanguage {
+              name
+            }
+          }
+        }
+        items(first: 10) {
+          nodes {
+            content {
+              __typename
+            }
+          }
+        }
+      }
+    }
+    organization(login: $orgLogin) {
+      projectV2(number: $orgProjectNumber) {
+        title
+        shortDescription
+        url
+        repositories(first: 20) {
+          nodes {
+            primaryLanguage {
+              name
+            }
+          }
+        }
+        items(first: 10) {
+          nodes {
+            content {
+              __typename
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 type Card = {
   id: number;
   title?: string;
@@ -17,34 +75,86 @@ type Card = {
   organization?: string;
 };
 
-const cards: Card[] = [
-  {
-    id: 1,
-    title: "Personal board",
-    excerpt: "Selected personal work, experiments, and portfolio pieces.",
-    url: "/projects/",
-    variant: "teal",
-    status: "in-progress",
-    phase: "Curated showcase",
-    outcome: "Active",
-    scope: "personal",
-    language: "Astro",
-    organization: "",
-  },
-  {
-    id: 2,
-    title: "Organisation board",
-    excerpt: "Projects and coordination work for Green Orbit Digital.",
-    url: "/projects/",
-    variant: "violet",
-    status: "in-progress",
-    phase: "Organisation work",
-    outcome: "Active",
-    scope: "org",
-    language: "TypeScript",
-    organization: "Green Orbit Digital",
-  },
-];
+let projectError = "";
+let cards: Card[] = [];
+
+const buildProjectCard = (
+  project: any,
+  id: number,
+  variant: Card["variant"],
+  phase: string,
+  scope: Card["scope"],
+  organization: string
+): Card => {
+  const items = (project?.items?.nodes ?? [])
+    .map((node: any) => node?.content)
+    .filter(Boolean);
+
+  const language =
+    (project?.repositories?.nodes ?? [])
+      .map((repo: any) => repo?.primaryLanguage?.name)
+      .find(Boolean) || "Project";
+
+  return {
+    id,
+    title: project?.title ?? "Untitled Project",
+    excerpt: project?.shortDescription ?? "",
+    url: project?.url ?? "",
+    outcome: items.length ? `${items.length} items` : "No items",
+    variant,
+    status: items.length ? "in-progress" : "planned",
+    phase,
+    scope,
+    language,
+    organization,
+  };
+};
+
+if (DEV_TOKEN) {
+  try {
+    const response = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${DEV_TOKEN}`,
+        "Content-Type": "application/json",
+        "User-Agent": "Astro Projects Page",
+      },
+      body: JSON.stringify({
+        query: graphql,
+        variables: {
+          login: GITHUB_USERNAME,
+          number: USER_PROJECT_NUMBER,
+          orgLogin: ORG_LOGIN,
+          orgProjectNumber: ORG_PROJECT_NUMBER,
+        },
+      }),
+    });
+
+    const json = await response.json();
+
+    if (!response.ok || json?.errors?.length) {
+      projectError =
+        json?.errors?.[0]?.message ??
+        `GitHub GraphQL request failed (${response.status}).`;
+    } else {
+      const userProject = json?.data?.user?.projectV2 ?? null;
+      const orgProject = json?.data?.organization?.projectV2 ?? null;
+
+      cards = [
+        ...(userProject
+          ? [buildProjectCard(userProject, 1, "teal", "Personal board", "personal", "")]
+          : []),
+        ...(orgProject
+          ? [buildProjectCard(orgProject, 2, "violet", "Organisation board", "org", "Green Orbit Digital")]
+          : []),
+      ];
+    }
+  } catch (err) {
+    projectError = err instanceof Error ? err.message : "Unable to load project data.";
+  }
+} else {
+  projectError = "Missing DEV_TOKEN.";
+}
 
 const scopeList = [...new Set(cards.map((card) => card.scope).filter(Boolean))].sort();
 const languageList = [...new Set(cards.map((card) => card.language).filter(Boolean))].sort();
