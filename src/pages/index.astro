@@ -1,0 +1,209 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ComparisonTable from "../components/ComparisonTable.astro";
+import { SITE } from "../site";
+
+const L = SITE.links;
+
+const surfaces = [
+  {
+    title: "Labs",
+    tone: "violet",
+    text: "Experimental prototypes, simulations and technical experiments. Places to test an idea or learn a technology before deciding whether it deserves to become something more durable.",
+    href: L.labs,
+    cta: "Visit Labs",
+  },
+  {
+    title: "Tools",
+    tone: "teal",
+    text: "Small, focused utilities designed to be useful more than once: calculators, converters, reference tools and lightweight data utilities.",
+    href: L.tools,
+    cta: "Visit Tools",
+  },
+  {
+    title: "Apps",
+    tone: "amber",
+    text: "More complete applications with a distinct purpose, interface and user journey, where experiments and reusable components mature into something product-like.",
+    href: L.apps,
+    cta: "Visit Apps",
+  },
+  {
+    title: "API and services",
+    tone: "sky",
+    text: "Shared data, manifests and infrastructure that connect the estate: APIs, authentication, CDN, digital asset management and status monitoring.",
+    href: L.api,
+    cta: "Explore the API",
+  },
+] as const;
+
+const selected = [
+  {
+    title: "Leicester Floods",
+    text: "A flood-information dashboard for Leicester, bringing together local monitoring data to help people explore conditions and better understand flood risk.",
+    href: "https://rjmlaird.github.io/leicester-flood-map/",
+    tech: "Python · open data",
+  },
+  {
+    title: "Orbital Calculator",
+    text: "A two-body orbit calculator: enter a semi-major axis and eccentricity to get the period, periapsis and apoapsis radii and the speeds at each, using the vis-viva equation.",
+    href: `${L.tools}/orbital-calc`,
+    tech: "TypeScript · Hono · Cloudflare Workers",
+  },
+  {
+    title: "Portfolio Engine",
+    text: "A modular content and data architecture connecting my portfolio, CV, developer projects and APIs into one coherent system, with structured data shared across sites.",
+    href: "/open-source/",
+    tech: "Astro · TypeScript · JSON-LD",
+    internal: true,
+  },
+] as const;
+
+const practice = [
+  { left: "Start from a technology I want to use", right: "Start with the problem and who it is for" },
+  { left: "One large application that does everything", right: "Independent repositories and deployments joined by shared APIs, design and docs" },
+  { left: "Experiments left to rot in the same place as finished work", right: "Labs, tools and apps kept separate, so each has a clear maturity" },
+  { left: "Decisions that live in someone's head", right: "Decisions written down, especially where a system will be reused" },
+];
+
+const ld = [
+  {
+    "@type": "CollectionPage",
+    "@id": `${SITE.url}/#home`,
+    url: `${SITE.url}/`,
+    name: "Developer hub",
+    isPartOf: { "@id": `${SITE.url}/#website` },
+    about: { "@id": SITE.personId },
+  },
+];
+---
+
+<Layout
+  title="Developer hub"
+  description="Labs, tools, apps, APIs and open-source work by Ryan Laird: a physicist-turned-developer building where scientific data, communication and code meet."
+  jsonLd={ld}
+>
+  <div class="wrap page">
+    <header class="page-head hero">
+      <p class="sl">Developer hub</p>
+      <h1>Building at the intersection of physics, communication and code</h1>
+      <p class="lead">
+        I’m <strong>Ryan Laird</strong>, a physicist-turned-developer who builds tools, experiments and small
+        applications to explore ideas, make data more useful and turn complex subjects into clear experiences.
+      </p>
+      <p class="lead">
+        This site is my developer hub: a working index of my <strong>labs, tools, apps, APIs and technical
+        projects</strong>, alongside the thinking that connects them.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/projects/">Explore the work</a>
+        <a class="btn" href="/open-source/">View repositories</a>
+        <a class="btn" href="#connect">Connect</a>
+      </div>
+    </header>
+
+    <section class="block" aria-labelledby="surfaces-title">
+      <p class="tlbl">What you’ll find here</p>
+      <h2 id="surfaces-title">Four places the work lives</h2>
+      <div class="route-grid">
+        {surfaces.map((s) => (
+          <article class="route" data-tone={s.tone}>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+            <a class="go" href={s.href} rel="noopener">{s.cta}</a>
+          </article>
+        ))}
+      </div>
+      <p class="muted">
+        Service health is on the <a href={L.status} rel="noopener">status page</a>.
+      </p>
+    </section>
+
+    <section class="block" aria-labelledby="work-title">
+      <p class="tlbl">Selected work</p>
+      <h2 id="work-title">Three things worth opening first</h2>
+      <div class="route-grid">
+        {selected.map((p, i) => (
+          <article class="route" data-tone={["sky", "violet", "amber"][i]}>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+            <p class="muted"><code>{p.tech}</code></p>
+            <a class="go" href={p.href} rel={"internal" in p ? undefined : "noopener"}>View project</a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="how-title">
+      <p class="tlbl">How I work</p>
+      <h2 id="how-title">Small, maintainable systems over unnecessary complexity</h2>
+      <ul class="checklist">
+        <li><strong>Start with the problem</strong>, not the technology.</li>
+        <li><strong>Use shared foundations</strong> for design, content and data.</li>
+        <li><strong>Keep experiments separate</strong> from stable tools and finished applications.</li>
+        <li><strong>Document decisions</strong>, especially where a system will be reused.</li>
+        <li><strong>Build in public where it adds value</strong>, while keeping infrastructure secure and private.</li>
+      </ul>
+      <ComparisonTable
+        leftTitle="Instead of"
+        rightTitle="I prefer"
+        rows={practice}
+        caption="Habits I avoid compared with the practices I use"
+      />
+      <p>
+        The estate is deliberately modular: independent repositories and deployments, connected by shared APIs,
+        design principles and documentation.
+      </p>
+    </section>
+
+    <section class="block" aria-labelledby="areas-title">
+      <p class="tlbl">Explore</p>
+      <h2 id="areas-title">Go deeper</h2>
+      <div class="route-grid">
+        <article class="route">
+          <h3>Open-source activity</h3>
+          <p>A live view of the repositories, languages and recent contributions behind my work, pulled from GitHub at build time.</p>
+          <a class="go" href="/open-source/">Explore GitHub activity</a>
+        </article>
+        <article class="route" data-tone="violet">
+          <h3>Projects in progress</h3>
+          <p>Websites, data models, publishing workflows and lightweight operational tools, with status and language filters.</p>
+          <a class="go" href="/projects/">View development projects</a>
+        </article>
+        <article class="route" data-tone="amber">
+          <h3>Tools &amp; stack</h3>
+          <p>The working toolkit behind it all, filterable by discipline and by how recently each tool has been in active use.</p>
+          <a class="go" href="/stack/">Browse the stack</a>
+        </article>
+        <article class="route" data-tone="sky">
+          <h3>Background</h3>
+          <p>Where the physics, science-communication and digital-strategy thinking behind the code comes from.</p>
+          <a class="go" href="/about/">About me</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="block" id="connect" aria-labelledby="connect-title">
+      <p class="tlbl">Connect</p>
+      <h2 id="connect-title">Find my work and updates</h2>
+      <ul class="checklist">
+        <li><a href={L.github} rel="me noopener">GitHub — rjmlaird</a></li>
+        <li><a href={L.linkedin} rel="me noopener">LinkedIn — Ryan Laird</a></li>
+        <li><a href={L.main} rel="me noopener">Main site — rjmlaird.co.uk</a></li>
+        <li><a href={L.cv} rel="me noopener">CV — rjmlaird.cv</a></li>
+      </ul>
+      <p>
+        For collaborations, consulting or technical projects, the best starting point is
+        <a href={L.contact} rel="noopener">my main site</a>.
+      </p>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .hero {
+    padding-top: 2rem;
+  }
+  .hero h1 {
+    max-width: 20ch;
+  }
+</style>

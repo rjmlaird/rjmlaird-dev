@@ -1,0 +1,1219 @@
+{
+  "$schema": "./techstack.schema.json",
+  "title": "Technology Stack",
+  "description": "Representative technologies used across current, past and exploratory work in web development, science communication, data analysis, astronomy and geospatial systems.",
+  "lastUpdated": "2026-10-14",
+  "usageLevels": {
+    "current": "Used in active work, current systems or recent projects.",
+    "working_knowledge": "Used meaningfully and can be applied again with normal reference material.",
+    "legacy": "Meaningful previous experience, but not a current default.",
+    "exploratory": "Evaluated, learned or used experimentally.",
+    "indirect_dependency": "Detected in a codebase or toolchain; not necessarily operated directly."
+  },
+  "featured": [
+    "Astro",
+    "TypeScript",
+    "Python",
+    "Cloudflare Workers",
+    "Cloudflare D1",
+    "PostgreSQL",
+    "GitHub Actions",
+    "Docker",
+    "QGIS",
+    "Astropy",
+    "HubSpot",
+    "Notion"
+  ],
+  "categories": [
+    {
+      "name": "Web Languages",
+      "items": [
+        {
+          "name": "HTML",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTML",
+          "logo": "html5",
+          "color": "E34F26",
+          "usage": "current"
+        },
+        {
+          "name": "CSS",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+          "logo": "css3",
+          "color": "1572B6",
+          "usage": "current"
+        },
+        {
+          "name": "JavaScript",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+          "logo": "javascript",
+          "color": "F7DF1E",
+          "logoColor": "black",
+          "usage": "current"
+        },
+        {
+          "name": "TypeScript",
+          "url": "https://www.typescriptlang.org/",
+          "logo": "typescript",
+          "color": "3178C6",
+          "usage": "current"
+        },
+        {
+          "name": "SQL",
+          "url": "https://www.postgresql.org/docs/current/sql.html",
+          "logo": "postgresql",
+          "color": "4169E1",
+          "usage": "current"
+        },
+        {
+          "name": "Shell / Bash",
+          "url": "https://www.gnu.org/software/bash/",
+          "logo": "gnubash",
+          "color": "4EAA25",
+          "usage": "current"
+        },
+        {
+          "name": "Sass",
+          "url": "https://sass-lang.com/",
+          "logo": "sass",
+          "color": "CC6699",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "PHP",
+          "url": "https://www.php.net/",
+          "logo": "php",
+          "color": "777BB4",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Go",
+          "url": "https://go.dev/",
+          "logo": "go",
+          "color": "00ADD8",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Rust",
+          "url": "https://www.rust-lang.org/",
+          "logo": "rust",
+          "color": "000000",
+          "usage": "exploratory"
+        },
+        {
+          "name": "Java",
+          "url": "https://www.java.com/",
+          "logo": "openjdk",
+          "color": "ED8B00",
+          "usage": "working_knowledge"
+        }
+      ]
+    },
+    {
+      "name": "Scientific Computing",
+      "items": [
+        {
+          "name": "Python",
+          "url": "https://www.python.org/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "current"
+        },
+        {
+          "name": "C",
+          "url": "https://en.cppreference.com/w/c",
+          "logo": "c",
+          "color": "A8B9CC",
+          "logoColor": "black",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "C++",
+          "url": "https://isocpp.org/",
+          "logo": "cplusplus",
+          "color": "00599C",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Fortran",
+          "url": "https://fortran-lang.org/",
+          "logo": "fortran",
+          "color": "734F96",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "R",
+          "url": "https://www.r-project.org/",
+          "logo": "r",
+          "color": "276DC3",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "MATLAB",
+          "url": "https://www.mathworks.com/products/matlab.html",
+          "logo": "mathworks",
+          "color": "E16737",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "IDL",
+          "url": "https://www.nv5geospatialsoftware.com/Products/IDL",
+          "icon": "code",
+          "color": "2D8CFF",
+          "context": "Interactive Data Language",
+          "usage": "legacy"
+        },
+        {
+          "name": "LaTeX",
+          "url": "https://www.latex-project.org/",
+          "logo": "latex",
+          "color": "008080",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Gnuplot",
+          "url": "http://www.gnuplot.info/",
+          "icon": "chart",
+          "color": "F0AD4E",
+          "logoColor": "black",
+          "usage": "legacy"
+        },
+        {
+          "name": "Anaconda",
+          "url": "https://www.anaconda.com/",
+          "logo": "anaconda",
+          "color": "44A833",
+          "context": "Python and data-science environment management",
+          "usage": "working_knowledge"
+        }
+      ]
+    },
+    {
+      "name": "Astronomy & Astrophysics",
+      "items": [
+        {
+          "name": "Astropy",
+          "url": "https://www.astropy.org/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Astroquery",
+          "url": "https://astroquery.readthedocs.io/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Skyfield",
+          "url": "https://rhodesmill.org/skyfield/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Astroplan",
+          "url": "https://astroplan.readthedocs.io/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "SunPy",
+          "url": "https://sunpy.org/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "IRAF",
+          "url": "https://iraf-community.github.io/",
+          "icon": "telescope",
+          "color": "4EAA25",
+          "usage": "legacy"
+        },
+        {
+          "name": "TOPCAT",
+          "url": "https://www.star.bris.ac.uk/~mbt/topcat/",
+          "logo": "openjdk",
+          "color": "E76F00",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "SAOImage DS9",
+          "url": "https://sites.google.com/cfa.harvard.edu/saoimageds9",
+          "icon": "image",
+          "color": "E34F26",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Aladin",
+          "url": "https://aladin.cds.unistra.fr/",
+          "icon": "sky-map",
+          "color": "4A90E2",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "SAO/NASA ADS",
+          "url": "https://ui.adsabs.harvard.edu/",
+          "logo": "nasa",
+          "color": "0B3D91",
+          "context": "Astronomy literature database",
+          "usage": "current"
+        },
+        {
+          "name": "SIMBAD",
+          "url": "https://simbad.cds.unistra.fr/",
+          "icon": "database",
+          "color": "3B82F6",
+          "context": "Astronomical object database",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "VizieR",
+          "url": "https://vizier.cds.unistra.fr/",
+          "icon": "database",
+          "color": "3B82F6",
+          "context": "Astronomical catalogue service",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Gaia Archive",
+          "url": "https://gea.esac.esa.int/archive/",
+          "icon": "satellite",
+          "color": "003247",
+          "usage": "working_knowledge"
+        }
+      ]
+    },
+    {
+      "name": "Data, Statistics & Visualisation",
+      "items": [
+        {
+          "name": "NumPy",
+          "url": "https://numpy.org/",
+          "logo": "numpy",
+          "color": "013243",
+          "usage": "current"
+        },
+        {
+          "name": "SciPy",
+          "url": "https://scipy.org/",
+          "logo": "scipy",
+          "color": "8CAAE6",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Pandas",
+          "url": "https://pandas.pydata.org/",
+          "logo": "pandas",
+          "color": "150458",
+          "usage": "current"
+        },
+        {
+          "name": "Polars",
+          "url": "https://pola.rs/",
+          "logo": "polars",
+          "color": "CD792C",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "DuckDB",
+          "url": "https://duckdb.org/",
+          "logo": "duckdb",
+          "color": "FFF000",
+          "logoColor": "black",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Matplotlib",
+          "url": "https://matplotlib.org/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Plotly",
+          "url": "https://plotly.com/",
+          "logo": "plotly",
+          "color": "3F4F75",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Jupyter",
+          "url": "https://jupyter.org/",
+          "logo": "jupyter",
+          "color": "F37626",
+          "usage": "current"
+        },
+        {
+          "name": "RStudio",
+          "url": "https://posit.co/products/open-source/rstudio/",
+          "logo": "rstudio",
+          "color": "75AADB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "tidyverse",
+          "url": "https://www.tidyverse.org/",
+          "logo": "r",
+          "color": "276DC3",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "ggplot2",
+          "url": "https://ggplot2.tidyverse.org/",
+          "logo": "r",
+          "color": "276DC3",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "ParaView",
+          "url": "https://www.paraview.org/",
+          "logo": "vtk",
+          "color": "0066A6",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "VTK",
+          "url": "https://vtk.org/",
+          "logo": "vtk",
+          "color": "0066A6",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "OpenFOAM",
+          "url": "https://www.openfoam.com/",
+          "logo": "openfoam",
+          "color": "1E5AA8",
+          "usage": "legacy"
+        }
+      ]
+    },
+    {
+      "name": "Geospatial, Earth Observation & Space Systems",
+      "items": [
+        {
+          "name": "ArcGIS Pro",
+          "url": "https://www.esri.com/en-us/arcgis/products/arcgis-pro/overview",
+          "logo": "arcgis",
+          "color": "2C7AC3",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "ArcGIS Online",
+          "url": "https://www.arcgis.com/",
+          "logo": "arcgis",
+          "color": "2C7AC3",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "QGIS",
+          "url": "https://qgis.org/",
+          "logo": "qgis",
+          "color": "589632",
+          "usage": "current"
+        },
+        {
+          "name": "Google Earth Engine",
+          "url": "https://earthengine.google.com/",
+          "logo": "googleearth",
+          "color": "4285F4",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "ESA SNAP",
+          "url": "https://step.esa.int/main/toolboxes/snap/",
+          "icon": "satellite",
+          "color": "003247",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Copernicus Data Space",
+          "url": "https://dataspace.copernicus.eu/",
+          "icon": "satellite",
+          "color": "003399",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Sentinel Hub",
+          "url": "https://www.sentinel-hub.com/",
+          "icon": "satellite",
+          "color": "00A651",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "GDAL",
+          "url": "https://gdal.org/",
+          "logo": "gdal",
+          "color": "5CAE40",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "GeoPandas",
+          "url": "https://geopandas.org/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Rasterio",
+          "url": "https://rasterio.readthedocs.io/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Cartopy",
+          "url": "https://cartopy.readthedocs.io/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "xarray",
+          "url": "https://xarray.dev/",
+          "logo": "python",
+          "color": "3776AB",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "STAC",
+          "url": "https://stacspec.org/",
+          "logo": "json",
+          "color": "F5A623",
+          "context": "SpatioTemporal Asset Catalog specification",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Cesium",
+          "url": "https://cesium.com/platform/cesiumjs/",
+          "logo": "cesium",
+          "color": "6CADDF",
+          "usage": "exploratory"
+        },
+        {
+          "name": "STK",
+          "url": "https://www.ansys.com/products/missions/ansys-stk",
+          "logo": "ansys",
+          "color": "FFB71B",
+          "logoColor": "black",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "GMAT",
+          "url": "https://software.nasa.gov/software/GSC-17177-1",
+          "logo": "nasa",
+          "color": "0B3D91",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Orekit",
+          "url": "https://www.orekit.org/",
+          "logo": "openjdk",
+          "color": "ED8B00",
+          "usage": "exploratory"
+        },
+        {
+          "name": "NASA Worldview",
+          "url": "https://worldview.earthdata.nasa.gov/",
+          "logo": "nasa",
+          "color": "0B3D91",
+          "usage": "working_knowledge"
+        }
+      ]
+    },
+    {
+      "name": "Web Frontend & Interfaces",
+      "items": [
+        {
+          "name": "Astro",
+          "url": "https://astro.build/",
+          "logo": "astro",
+          "color": "FF5D01",
+          "context": "Core web framework",
+          "usage": "current"
+        },
+        {
+          "name": "React",
+          "url": "https://react.dev/",
+          "logo": "react",
+          "color": "61DAFB",
+          "logoColor": "black",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Next.js",
+          "url": "https://nextjs.org/",
+          "logo": "nextdotjs",
+          "color": "000000",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Preact",
+          "url": "https://preactjs.com/",
+          "logo": "preact",
+          "color": "673AB8",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Alpine.js",
+          "url": "https://alpinejs.dev/",
+          "logo": "alpinedotjs",
+          "color": "8BC0D0",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Tailwind CSS",
+          "url": "https://tailwindcss.com/",
+          "logo": "tailwindcss",
+          "color": "06B6D4",
+          "usage": "current"
+        },
+        {
+          "name": "Streamlit",
+          "url": "https://streamlit.io/",
+          "logo": "streamlit",
+          "color": "FF4B4B",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "D3.js",
+          "url": "https://d3js.org/",
+          "logo": "d3dotjs",
+          "color": "F9A03C",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "three.js",
+          "url": "https://threejs.org/",
+          "logo": "threedotjs",
+          "color": "000000",
+          "usage": "exploratory"
+        },
+        {
+          "name": "MDX",
+          "url": "https://mdxjs.com/",
+          "logo": "mdx",
+          "color": "1B1F24",
+          "usage": "working_knowledge"
+        }
+      ]
+    },
+    {
+      "name": "AI, Machine Learning & OCR",
+      "items": [
+        {
+          "name": "Vercel AI SDK",
+          "url": "https://ai-sdk.dev/",
+          "logo": "vercel",
+          "color": "000000",
+          "context": "TypeScript toolkit for AI application development",
+          "usage": "exploratory"
+        },
+        {
+          "name": "Tesseract OCR",
+          "url": "https://tesseract-ocr.github.io/",
+          "icon": "scan-text",
+          "color": "5C9CFF",
+          "context": "Optical character recognition",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Rasa",
+          "url": "https://rasa.com/",
+          "logo": "rasa",
+          "color": "5A17EE",
+          "context": "Conversational AI and natural-language understanding",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "BLOOM",
+          "url": "https://huggingface.co/bigscience/bloom",
+          "logo": "huggingface",
+          "color": "FFD21E",
+          "logoColor": "black",
+          "context": "BigScience multilingual language model",
+          "usage": "exploratory"
+        },
+        {
+          "name": "libjpeg",
+          "url": "https://libjpeg-turbo.org/",
+          "icon": "image",
+          "color": "8A2BE2",
+          "context": "JPEG image-processing library",
+          "usage": "indirect_dependency"
+        }
+      ]
+    },
+    {
+      "name": "CMS & Publishing Platforms",
+      "items": [
+        {
+          "name": "WordPress",
+          "url": "https://wordpress.org/",
+          "logo": "wordpress",
+          "color": "21759B",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Squarespace",
+          "url": "https://www.squarespace.com/",
+          "logo": "squarespace",
+          "color": "000000",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Drupal",
+          "url": "https://www.drupal.org/",
+          "logo": "drupal",
+          "color": "0678BE",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Djangoplicity",
+          "url": "https://github.com/djangoplicity/djangoplicity",
+          "logo": "django",
+          "color": "092E20",
+          "usage": "legacy"
+        },
+        {
+          "name": "django CMS",
+          "url": "https://www.django-cms.org/",
+          "logo": "django",
+          "color": "092E20",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "eZ Publish",
+          "url": "https://github.com/ezsystems/ezpublish-legacy",
+          "logo": "php",
+          "color": "777BB4",
+          "context": "Legacy CMS experience",
+          "usage": "legacy"
+        },
+        {
+          "name": "Ibexa DXP",
+          "url": "https://www.ibexa.co/",
+          "logo": "symfony",
+          "color": "000000",
+          "usage": "legacy"
+        }
+      ]
+    },
+    {
+      "name": "Backend, APIs & Integration",
+      "items": [
+        {
+          "name": "Node.js",
+          "url": "https://nodejs.org/",
+          "logo": "nodedotjs",
+          "color": "339933",
+          "usage": "current"
+        },
+        {
+          "name": "Hono",
+          "url": "https://hono.dev/",
+          "logo": "hono",
+          "color": "E36002",
+          "usage": "current"
+        },
+        {
+          "name": "REST APIs",
+          "url": "https://restfulapi.net/",
+          "icon": "api",
+          "color": "009688",
+          "usage": "current"
+        },
+        {
+          "name": "OpenAPI",
+          "url": "https://www.openapis.org/",
+          "logo": "openapiinitiative",
+          "color": "6BA539",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "GraphQL",
+          "url": "https://graphql.org/",
+          "logo": "graphql",
+          "color": "E10098",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Express",
+          "url": "https://expressjs.com/",
+          "logo": "express",
+          "color": "000000",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Django",
+          "url": "https://www.djangoproject.com/",
+          "logo": "django",
+          "color": "092E20",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Prisma",
+          "url": "https://www.prisma.io/",
+          "logo": "prisma",
+          "color": "2D3748",
+          "context": "Database ORM",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Axios",
+          "url": "https://axios-http.com/",
+          "logo": "axios",
+          "color": "5A29E4",
+          "context": "HTTP client",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "JSON Web Tokens",
+          "url": "https://jwt.io/",
+          "logo": "jsonwebtokens",
+          "color": "000000",
+          "context": "Token-based authentication",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Notion API",
+          "url": "https://developers.notion.com/",
+          "logo": "notion",
+          "color": "000000",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "HubSpot API",
+          "url": "https://developers.hubspot.com/",
+          "logo": "hubspot",
+          "color": "FF7A59",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Stripe API",
+          "url": "https://stripe.com/docs/api",
+          "logo": "stripe",
+          "color": "635BFF",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "GitHub API",
+          "url": "https://docs.github.com/en/rest",
+          "logo": "github",
+          "color": "181717",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Zotero API",
+          "url": "https://www.zotero.org/support/dev/web_api/v3/start",
+          "logo": "zotero",
+          "color": "CC2936",
+          "usage": "working_knowledge"
+        }
+      ]
+    },
+    {
+      "name": "Marketing, CRM & Analytics",
+      "items": [
+        {
+          "name": "HubSpot",
+          "url": "https://www.hubspot.com/",
+          "logo": "hubspot",
+          "color": "FF7A59",
+          "context": "CRM, forms and marketing automation",
+          "usage": "current"
+        },
+        {
+          "name": "MailerLite",
+          "url": "https://www.mailerlite.com/",
+          "logo": "mailerlite",
+          "color": "2BB673",
+          "context": "Email marketing and nurture campaigns",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Mailchimp",
+          "url": "https://mailchimp.com/",
+          "logo": "mailchimp",
+          "color": "FFE01B",
+          "logoColor": "black",
+          "context": "Email marketing platform",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Brevo",
+          "url": "https://www.brevo.com/",
+          "logo": "brevo",
+          "color": "0B996E",
+          "context": "Email and marketing automation",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Google Analytics",
+          "url": "https://marketingplatform.google.com/about/analytics/",
+          "logo": "googleanalytics",
+          "color": "E37400",
+          "context": "Web analytics and conversion measurement",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Google Tag Manager",
+          "url": "https://tagmanager.google.com/",
+          "logo": "googletagmanager",
+          "color": "246FDB",
+          "context": "Tag and event management",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Google Search Console",
+          "url": "https://search.google.com/search-console/",
+          "logo": "googlesearchconsole",
+          "color": "458CF5",
+          "context": "Search performance and technical SEO",
+          "usage": "current"
+        },
+        {
+          "name": "Matomo",
+          "url": "https://matomo.org/",
+          "logo": "matomo",
+          "color": "3152A0",
+          "context": "Privacy-conscious web analytics",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "PostHog",
+          "url": "https://posthog.com/",
+          "logo": "posthog",
+          "color": "F54E00",
+          "context": "Product analytics and event capture",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Looker Studio",
+          "url": "https://lookerstudio.google.com/",
+          "logo": "looker",
+          "color": "4285F4",
+          "context": "Reporting dashboards",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Tableau",
+          "url": "https://www.tableau.com/",
+          "logo": "tableau",
+          "color": "E97627",
+          "context": "Business intelligence and data visualisation",
+          "usage": "working_knowledge"
+        }
+      ]
+    },
+    {
+      "name": "Cloud, Databases & Storage",
+      "items": [
+        {
+          "name": "PostgreSQL",
+          "url": "https://www.postgresql.org/",
+          "logo": "postgresql",
+          "color": "4169E1",
+          "usage": "current"
+        },
+        {
+          "name": "SQLite",
+          "url": "https://www.sqlite.org/",
+          "logo": "sqlite",
+          "color": "003B57",
+          "usage": "current"
+        },
+        {
+          "name": "Redis",
+          "url": "https://redis.io/",
+          "logo": "redis",
+          "color": "FF4438",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Cloudflare",
+          "url": "https://www.cloudflare.com/",
+          "logo": "cloudflare",
+          "color": "F38020",
+          "usage": "current"
+        },
+        {
+          "name": "Cloudflare Pages",
+          "url": "https://pages.cloudflare.com/",
+          "logo": "cloudflarepages",
+          "color": "F38020",
+          "usage": "current"
+        },
+        {
+          "name": "Cloudflare Workers",
+          "url": "https://workers.cloudflare.com/",
+          "logo": "cloudflareworkers",
+          "color": "F38020",
+          "context": "Serverless APIs, webhooks and integration logic",
+          "usage": "current"
+        },
+        {
+          "name": "Cloudflare D1",
+          "url": "https://developers.cloudflare.com/d1/",
+          "logo": "cloudflare",
+          "color": "F38020",
+          "usage": "current"
+        },
+        {
+          "name": "Cloudflare R2",
+          "url": "https://developers.cloudflare.com/r2/",
+          "logo": "cloudflare",
+          "color": "F38020",
+          "usage": "current"
+        },
+        {
+          "name": "GitHub Pages",
+          "url": "https://pages.github.com/",
+          "logo": "github",
+          "color": "181717",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Netlify",
+          "url": "https://www.netlify.com/",
+          "logo": "netlify",
+          "color": "00C7B7",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Vercel",
+          "url": "https://vercel.com/",
+          "logo": "vercel",
+          "color": "000000",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Render",
+          "url": "https://render.com/",
+          "logo": "render",
+          "color": "46E3B7",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Heroku",
+          "url": "https://www.heroku.com/",
+          "logo": "heroku",
+          "color": "430098",
+          "usage": "legacy"
+        }
+      ]
+    },
+    {
+      "name": "Tooling, Testing & Delivery",
+      "items": [
+        {
+          "name": "Git",
+          "url": "https://git-scm.com/",
+          "logo": "git",
+          "color": "F05032",
+          "usage": "current"
+        },
+        {
+          "name": "GitHub",
+          "url": "https://github.com/",
+          "logo": "github",
+          "color": "181717",
+          "usage": "current"
+        },
+        {
+          "name": "GitHub Actions",
+          "url": "https://github.com/features/actions",
+          "logo": "githubactions",
+          "color": "2088FF",
+          "usage": "current"
+        },
+        {
+          "name": "GitLab",
+          "url": "https://gitlab.com/",
+          "logo": "gitlab",
+          "color": "FC6D26",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "GitLab CI",
+          "url": "https://docs.gitlab.com/ci/",
+          "logo": "gitlab",
+          "color": "FC6D26",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "npm",
+          "url": "https://www.npmjs.com/",
+          "logo": "npm",
+          "color": "CB3837",
+          "usage": "current"
+        },
+        {
+          "name": "pnpm",
+          "url": "https://pnpm.io/",
+          "logo": "pnpm",
+          "color": "F69220",
+          "usage": "current"
+        },
+        {
+          "name": "Vite",
+          "url": "https://vite.dev/",
+          "logo": "vite",
+          "color": "646CFF",
+          "usage": "current"
+        },
+        {
+          "name": "ESBuild",
+          "url": "https://esbuild.github.io/",
+          "logo": "esbuild",
+          "color": "FFCF00",
+          "logoColor": "black",
+          "usage": "current"
+        },
+        {
+          "name": "Rollup",
+          "url": "https://rollupjs.org/",
+          "logo": "rollupdotjs",
+          "color": "EC4A3F",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Webpack",
+          "url": "https://webpack.js.org/",
+          "logo": "webpack",
+          "color": "8DD6F9",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "ESLint",
+          "url": "https://eslint.org/",
+          "logo": "eslint",
+          "color": "4B32C3",
+          "usage": "current"
+        },
+        {
+          "name": "Prettier",
+          "url": "https://prettier.io/",
+          "logo": "prettier",
+          "color": "F7B93E",
+          "logoColor": "black",
+          "usage": "current"
+        },
+        {
+          "name": "Vitest",
+          "url": "https://vitest.dev/",
+          "logo": "vitest",
+          "color": "6E9F18",
+          "usage": "current"
+        },
+        {
+          "name": "Playwright",
+          "url": "https://playwright.dev/",
+          "logo": "playwright",
+          "color": "2EAD33",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Pytest",
+          "url": "https://pytest.org/",
+          "logo": "pytest",
+          "color": "0A9EDC",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "Docker",
+          "url": "https://www.docker.com/",
+          "logo": "docker",
+          "color": "2496ED",
+          "usage": "current"
+        },
+        {
+          "name": "Docker Compose",
+          "url": "https://docs.docker.com/compose/",
+          "logo": "docker",
+          "color": "2496ED",
+          "usage": "working_knowledge"
+        },
+        {
+          "name": "VS Code",
+          "url": "https://code.visualstudio.com/",
+          "logo": "visualstudiocode",
+          "color": "007ACC",
+          "usage": "current"
+        },
+        {
+          "name": "Cursor",
+          "url": "https://cursor.com/",
+          "logo": "cursor",
+          "color": "000000",
+          "usage": "current"
+        },
+        {
+          "name": "CMake",
+          "url": "https://cmake.org/",
+          "logo": "cmake",
+          "color": "064F8C",
+          "usage": "working_knowledge"
+        }
+      ]
+    },
+    {
+      "name": "Content, Research & Knowledge Systems",
+      "items": [
+        {
+          "name": "Notion",
+          "url": "https://www.notion.so/",
+          "logo": "notion",
+          "color": "000000",
+          "usage": "current"
+        },
+        {
+          "name": "Markdown",
+          "url": "https://www.markdownguide.org/",
+          "logo": "markdown",
+          "color": "000000",
+          "usage": "current"
+        },
+        {
+          "name": "JSON",
+          "url": "https://www.json.org/",
+          "logo": "json",
+          "color": "000000",
+          "usage": "current"
+        },
+        {
+          "name": "YAML",
+          "url": "https://yaml.org/",
+          "logo": "yaml",
+          "color": "CB171E",
+          "usage": "current"
+        },
+        {
+          "name": "Zotero",
+          "url": "https://www.zotero.org/",
+          "logo": "zotero",
+          "color": "CC2936",
+          "usage": "current"
+        },
+        {
+          "name": "Cal.com",
+          "url": "https://cal.com/",
+          "logo": "caldotcom",
+          "color": "292929",
+          "context": "Scheduling and booking workflows",
+          "usage": "current"
+        },
+        {
+          "name": "Stripe",
+          "url": "https://stripe.com/",
+          "logo": "stripe",
+          "color": "635BFF",
+          "context": "Payments, invoices and refunds",
+          "usage": "working_knowledge"
+        }
+      ]
+    }
+  ]
+}

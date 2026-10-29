@@ -1,0 +1,107 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SITE } from "../site";
+---
+
+<Layout
+  title="About"
+  description="The physics, science-communication and digital-strategy background behind Ryan Laird's development work."
+>
+  <div class="wrap page">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Dev</a> / About</nav>
+
+    <header class="page-head">
+      <p class="sl">About</p>
+      <h1>Where the code comes from</h1>
+      <p class="lead">
+        My work sits where <strong>scientific understanding, strategic communication and practical digital
+        building</strong> meet. This page explains how that background shapes what I build.
+      </p>
+    </header>
+
+    <section class="block" aria-labelledby="do-title">
+      <p class="tlbl">What I do</p>
+      <h2 id="do-title">A physicist’s habits, applied to software</h2>
+      <p>
+        I began in physics and astrophysics, studying how complex systems can be observed, modelled and
+        explained. That foundation still shapes how I approach technology: ask what the evidence says,
+        understand the system before changing it, and make the result understandable to the people who need
+        to use it.
+      </p>
+      <p>
+        Over the past decade I have worked across <strong>space innovation, Earth observation, sustainability
+        and climate technology</strong>, helping organisations translate technical capability into clear
+        stories, services and opportunities. I am a <strong>Chartered Marketer</strong> with experience in
+        strategic communications, science communication, service design, events and digital strategy.
+      </p>
+      <p>
+        This developer site is where that background becomes practical: small systems, visualisations and
+        utilities that help me test ideas, work with data and communicate more effectively.
+      </p>
+    </section>
+
+    <div class="prose-cols">
+      <section class="block" aria-labelledby="phys-title">
+        <p class="tlbl">Physics and science</p>
+        <h2 id="phys-title">Comfortable with uncertainty</h2>
+        <p>
+          My academic background is in <strong>physics with astrophysics</strong>, including an MPhys (Hons)
+          and doctoral research in astronomy. Physics taught me to reason from evidence and to look for the
+          underlying structure behind a problem.
+        </p>
+        <p>Whether I am building a data dashboard, designing an API or exploring a simulation, I ask the same questions:</p>
+        <ul class="checklist">
+          <li>What is actually being measured?</li>
+          <li>What assumptions sit behind the model?</li>
+          <li>How can complexity be made visible without oversimplifying it?</li>
+          <li>How can a tool help someone make a better decision?</li>
+        </ul>
+        <p>
+          I am particularly interested in <strong>space, Earth observation, climate and environmental
+          data</strong>, where scientific evidence, public understanding and practical action need to connect.
+        </p>
+      </section>
+
+      <section class="block" aria-labelledby="sci-title">
+        <p class="tlbl">Science communication</p>
+        <h2 id="sci-title">Useful only if people can use it</h2>
+        <p>
+          Science only creates value when people can understand it, trust it and act on it. My
+          science-communication work has focused on making technical subjects accessible without losing their
+          accuracy, working with space-sector organisations, researchers and mission-driven teams on editorial
+          content, events, digital platforms and stakeholder engagement.
+        </p>
+        <p>I care about communication, and therefore interfaces and documentation, that is:</p>
+        <ul class="checklist">
+          <li><strong>Clear</strong>: plain language, strong structure and honest explanations</li>
+          <li><strong>Credible</strong>: grounded in evidence and transparent about uncertainty</li>
+          <li><strong>Useful</strong>: designed around what an audience needs to understand or do</li>
+          <li><strong>Responsible</strong>: especially where technology affects sustainability, climate or public trust</li>
+        </ul>
+        <p>Each project here should explain not only what it does, but why it exists and what problem it is trying to solve.</p>
+      </section>
+    </div>
+
+    <section class="block" aria-labelledby="mkt-title">
+      <p class="tlbl">Marketing and digital strategy</p>
+      <h2 id="mkt-title">Technology is also about audience and adoption</h2>
+      <p>
+        As a Chartered Marketer, I bring a strategic-communications perspective to the things I build. My
+        background includes content strategy, digital campaigns, SEO, stakeholder engagement and event
+        delivery across the space, sustainability and technology sectors. In practice that means I ask
+        questions beyond the code:
+      </p>
+      <ul class="checklist">
+        <li>Who is this for?</li>
+        <li>What should they understand after using it?</li>
+        <li>What action should it enable?</li>
+        <li>How will we know whether it worked?</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn" href="/stack/">See the working stack</a>
+        <a class="btn" href={SITE.links.cv} rel="noopener">Full CV ↗</a>
+        <a class="btn" href={SITE.links.contact} rel="noopener">Get in touch ↗</a>
+      </div>
+    </section>
+  </div>
+</Layout>

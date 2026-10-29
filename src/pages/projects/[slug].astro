@@ -1,0 +1,386 @@
+---
+// src/pages/boards/[slug].astro
+//
+// One static page per GitHub Project (v2), with the project's README, field summary, a board grouped
+// by status, a dated timeline, and every item (issue, pull request or draft) with its fields and body.
+// Data comes from src/lib/github-projects.ts at build time.
+import Layout from "../../layouts/Layout.astro";
+import {
+  getBoards,
+  percentAlong,
+  monthTicks,
+  formatDate,
+  type Board,
+  type BoardItem,
+} from "../../lib/github-projects";
+
+export async function getStaticPaths() {
+  const boards = await getBoards();
+  return boards.map((board) => ({
+    params: { slug: board.slug },
+    props: { board },
+  }));
+}
+
+interface Props {
+  board: Board;
+}
+
+const { board } = Astro.props;
+const { counts } = board;
+
+// Fields shown as compact metadata tags on each item
+const metaFields = ["Area", "Decisions", "Priority", "Size", "Horizon"];
+const chipFields = board.fieldNames.filter(
+  (n) => n !== board.statusField && !metaFields.includes(n) && !/(start|target|end|due|finish)/i.test(n),
+);
+
+// Summary tables: every single-select field except the one used for grouping.
+const summaries = Object.entries(counts.byField).filter(
+  ([name, values]) => Object.keys(values).length > 0 && name !== board.statusField,
+);
+
+const dated = board.items
+  .filter((i): i is BoardItem & { start: string; end: string } => !!i.start && !!i.end)
+  .sort((a, b) => a.start.localeCompare(b.start) || a.end.localeCompare(b.end));
+
+const ticks = board.range ? monthTicks(board.range) : [];
+const kindLabel = { issue: "Issue", "pull-request": "Pull request", draft: "Draft", private: "Private" } as const;
+const updated = new Date(board.updatedAt).toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<Layout
+  title={board.title}
+  description={board.description || `GitHub project board: ${board.title}`}
+>
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Dev</a>
+    <span aria-hidden="true"> / </span>
+    <a href="/boards/">Boards</a>
+    <span aria-hidden="true"> / </span>
+    <span aria-current="page">{board.title}</span>
+  </nav>
+
+  <article class="board">
+    <p class="eyebrow">
+      GitHub project #{board.number} · <span class="badge">{board.isPublic ? "Public" : "Private"}</span>
+    </p>
+
+    <h1>{board.title}</h1>
+    {board.description && <p class="muted">{board.description}</p>}
+
+    <p class="meta">
+      {counts.total} items · {counts.open} open · {counts.closed} closed · Updated {updated}
+    </p>
+
+    <div class="toolbar">
+      <a href={board.url}>Open on GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+
+    {
+      board.readmeHtml && (
+        <section aria-labelledby="readme-h">
+          <h2 id="readme-h">About this board</h2>
+          <div class="readme" set:html={board.readmeHtml} />
+        </section>
+      )
+    }
+
+    {
+      summaries.length > 0 && (
+        <section aria-labelledby="summary-h">
+          <h2 id="summary-h">Summary</h2>
+          <div class="summary-grid">
+            {board.statusField && board.groups.length > 0 && (
+              <div class="card summary-card">
+                <h3>{board.statusField}</h3>
+                <ul class="plain">
+                  {board.groups.map((g) => (
+                    <li>
+                      <a href={`#group-${g.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>{g.name}</a>
+                      <span class="count">{g.items.length}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {summaries.map(([name, values]) => (
+              <div class="card summary-card">
+                <h3>{name}</h3>
+                <ul class="plain">
+                  {Object.entries(values)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([value, n]) => (
+                      <li>
+                        {value} <span class="count">{n}</span>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      dated.length > 0 && board.range && (
+        <section aria-labelledby="timeline-h">
+          <h2 id="timeline-h">Timeline</h2>
+          <p class="muted">
+            {formatDate(board.range.start)} to {formatDate(board.range.end)}. Bars are indicative; the dates are
+            listed in each row.
+          </p>
+          <div class="timeline-scroll">
+            <table class="timeline">
+              <caption class="sr-only">Items with start and target dates</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Item</th>
+                  <th scope="col">Start</th>
+                  <th scope="col">Target</th>
+                  <th scope="col" class="axis">
+                    <span class="sr-only">Timeline</span>
+                    <span class="ticks" aria-hidden="true">
+                      {ticks.map((t) => (
+                        <span class="tick" style={`left:${t.left}%`}>{t.label}</span>
+                      ))}
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {dated.map((i) => {
+                  const left = percentAlong(board.range!, i.start);
+                  const width = Math.max(percentAlong(board.range!, i.end) - left, 1.2);
+                  return (
+                    <tr>
+                      <th scope="row">
+                        <a href={`#item-${i.id}`}>{i.title}</a>
+                      </th>
+                      <td>{formatDate(i.start)}</td>
+                      <td>{formatDate(i.end)}</td>
+                      <td class="track">
+                        <span class="bar" aria-hidden="true" style={`left:${left}%;width:${width}%`} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )
+    }
+
+    <section aria-labelledby="items-h">
+      <h2 id="items-h">All items</h2>
+
+      <div class="filters" data-board-filter hidden>
+        <label for="board-search" class="sr-only">Filter items</label>
+        <input id="board-search" class="search" type="search" placeholder="Filter items by title, label or field" />
+        <p class="muted" data-filter-count aria-live="polite"></p>
+      </div>
+
+      {
+        board.groups.map((group) => (
+          <section
+            class="group"
+            id={`group-${group.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+            aria-labelledby={`gh-${group.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+          >
+            <h3 id={`gh-${group.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>
+              {group.name} <span class="count">{group.items.length}</span>
+            </h3>
+
+            <ul class="items">
+              {group.items.map((item) => (
+                <li class="card item" id={`item-${item.id}`} data-item>
+                  <p class="item-head">
+                    <span class="badge">{kindLabel[item.kind]}</span>
+                    {item.state && <span class="badge state" data-state={item.state.toLowerCase()}>{item.state.toLowerCase()}</span>}
+                    {item.repo && item.number && (
+                      <span class="meta">
+                        {item.repo}#{item.number}
+                      </span>
+                    )}
+                  </p>
+
+                  <h4>
+                    {item.url ? <a href={item.url}>{item.title}</a> : item.title}
+                  </h4>
+
+                  {(item.labels.length > 0 || item.assignees.length > 0) && (
+                    <p class="chips">
+                      {item.labels.map((l) => (
+                        <span class="badge" style={`border-color:#${l.color}`}>{l.name}</span>
+                      ))}
+                      {item.assignees.map((a) => (
+                        <span class="badge">@{a}</span>
+                      ))}
+                    </p>
+                  )}
+
+                  <div class="metadata-grid">
+                    {metaFields
+                      .filter((f) => item.fields[f])
+                      .map((f) => (
+                        <span class={`meta-tag ${f.toLowerCase()}`}>
+                          <span class="meta-label">{f}</span>
+                          <span class="meta-val">{item.fields[f]}</span>
+                        </span>
+                      ))}
+                    {item.start && (
+                      <span class="meta-tag start">
+                        <span class="meta-label">Start</span>
+                        <span class="meta-val">{formatDate(item.start)}</span>
+                      </span>
+                    )}
+                    {item.end && (
+                      <span class="meta-tag target">
+                        <span class="meta-label">Target</span>
+                        <span class="meta-val">{formatDate(item.end)}</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {Object.keys(item.fields).length > 0 && chipFields.some((f) => item.fields[f]) && (
+                    <dl class="fields">
+                      {chipFields
+                        .filter((f) => item.fields[f])
+                        .map((f) => (
+                          <>
+                            <dt>{f}</dt>
+                            <dd>{item.fields[f]}</dd>
+                          </>
+                        ))}
+                    </dl>
+                  )}
+
+                  {item.bodyHtml && (
+                    <details>
+                      <summary>Details</summary>
+                      <div class="body" set:html={item.bodyHtml} />
+                    </details>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+
+      {board.items.length === 0 && <p class="empty-state">This board has no items yet.</p>}
+    </section>
+  </article>
+</Layout>
+
+<script>
+  // Progressive enhancement: without JavaScript every item stays visible.
+  const wrap = document.querySelector<HTMLElement>("[data-board-filter]");
+  const input = document.querySelector<HTMLInputElement>("#board-search");
+  const count = document.querySelector<HTMLElement>("[data-filter-count]");
+  if (wrap && input) {
+    wrap.hidden = false;
+    const items = [...document.querySelectorAll<HTMLElement>("[data-item]")];
+    const groups = [...document.querySelectorAll<HTMLElement>(".group")];
+    const apply = () => {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      for (const el of items) {
+        const match = !q || (el.textContent ?? "").toLowerCase().includes(q);
+        el.hidden = !match;
+        if (match) shown++;
+      }
+      for (const g of groups) g.hidden = !g.querySelector("[data-item]:not([hidden])");
+      if (count) count.textContent = q ? `Showing ${shown} of ${items.length} items` : "";
+    };
+    input.addEventListener("input", apply);
+  }
+</script>
+
+<style>
+  .board { max-width: none; width: 100%; }
+  .plain { list-style: none; margin: 0; padding: 0; }
+  .plain li { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.1rem 0; font-size: 0.85rem; }
+  .count { color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+  .readme { border-left: 3px solid var(--border); padding-left: 1rem; }
+  
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+  }
+  .summary-card {
+    padding: 0.85rem 1rem;
+  }
+  .summary-card h3 {
+    font-size: 0.9rem;
+    margin: 0 0 0.4rem 0;
+  }
+
+  .items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.75rem;
+  }
+  .item h4 { margin: 0.35rem 0; font: 600 1.02rem "Space Grotesk", sans-serif; }
+  .item-head, .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 0; }
+  .chips { margin-top: 0.4rem; }
+  
+  .metadata-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+  }
+  .meta-tag {
+    display: inline-flex;
+    align-items: stretch;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    background: color-mix(in srgb, currentColor 3%, transparent);
+  }
+  .meta-label {
+    background: color-mix(in srgb, currentColor 8%, transparent);
+    color: var(--muted);
+    font-weight: 500;
+    padding: 0.15rem 0.35rem;
+    border-right: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  }
+  .meta-val {
+    padding: 0.15rem 0.4rem;
+    color: inherit;
+    font-weight: 500;
+  }
+
+  .state[data-state="open"] { color: var(--accent); }
+  .fields { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 1rem; margin: 0.6rem 0 0; font-size: 0.9rem; }
+  .fields dt { color: var(--muted); }
+  .fields dd { margin: 0; }
+  details { margin-top: 0.6rem; }
+  summary { cursor: pointer; color: var(--focus); }
+  .body { margin-top: 0.5rem; font-size: 0.95rem; }
+  .group { margin-top: 1.5rem; }
+  .filters { margin: 1rem 0; }
+
+  .timeline-scroll { overflow-x: auto; }
+  .timeline { display: table; width: 100%; min-width: 760px; font-size: 0.85rem; border-collapse: collapse; }
+  .timeline th, .timeline td { border: 0; border-bottom: 1px solid var(--border); padding: 0.35rem 0.5rem; text-align: left; font-weight: 400; }
+  .timeline thead th { color: var(--muted); }
+  .timeline tbody th { max-width: 22rem; }
+  .timeline td { white-space: nowrap; }
+  .axis, .track { position: relative; width: 45%; min-width: 280px; }
+  .ticks { position: relative; display: block; height: 1.2rem; }
+  .tick { position: absolute; transform: translateX(-50%); font-size: 0.72rem; }
+  .bar { position: absolute; top: 50%; height: 0.55rem; transform: translateY(-50%); border-radius: 999px; background: var(--accent); opacity: 0.85; }
+</style>

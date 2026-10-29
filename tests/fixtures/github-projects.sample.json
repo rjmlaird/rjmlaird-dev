@@ -1,0 +1,119 @@
+{
+  "_note": "Sample GraphQL-shaped data for tests only. It is not real project data.",
+  "projects": [
+    {
+      "id": "PVT_sample_1",
+      "number": 1,
+      "title": "Sample roadmap",
+      "shortDescription": "A sample board used by the test suite.",
+      "readme": "# About\n\nSample README with a [link](/rjmlaird/rjmlaird-docs).",
+      "readmeHtml": "<h1>About</h1>\n<p>Sample README with a <a href=\"/rjmlaird/rjmlaird-docs\">link</a>.</p>",
+      "url": "https://github.com/users/rjmlaird/projects/1",
+      "public": true,
+      "closed": false,
+      "createdAt": "2026-09-01T09:00:00Z",
+      "updatedAt": "2026-10-20T12:00:00Z",
+      "fields": {
+        "nodes": [
+          { "name": "Title", "dataType": "TITLE" },
+          { "name": "Assignees", "dataType": "ASSIGNEES" },
+          { "name": "Status", "dataType": "SINGLE_SELECT", "options": [{ "name": "Todo" }, { "name": "In progress" }, { "name": "Done" }] },
+          { "name": "Priority", "dataType": "SINGLE_SELECT", "options": [{ "name": "High" }, { "name": "Low" }] },
+          { "name": "Start date", "dataType": "DATE" },
+          { "name": "Target date", "dataType": "DATE" },
+          { "name": "Estimate", "dataType": "NUMBER" }
+        ]
+      },
+      "items": {
+        "nodes": [
+          {
+            "id": "PVTI_1",
+            "isArchived": false,
+            "content": {
+              "__typename": "Issue",
+              "number": 12,
+              "title": "Add orbit simulator tests",
+              "url": "https://github.com/rjmlaird/rjmlaird-tools/issues/12",
+              "state": "OPEN",
+              "bodyHTML": "<p>See <a href=\"/rjmlaird/rjmlaird-tools/pull/13\">#13</a>.</p>",
+              "repository": { "nameWithOwner": "rjmlaird/rjmlaird-tools" },
+              "labels": { "nodes": [{ "name": "testing", "color": "0E8A16" }, { "name": "odd", "color": "not-a-colour" }] },
+              "assignees": { "nodes": [{ "login": "rjmlaird" }] }
+            },
+            "fieldValues": {
+              "nodes": [
+                { "name": "In progress", "field": { "name": "Status" } },
+                { "name": "High", "field": { "name": "Priority" } },
+                { "date": "2026-10-01", "field": { "name": "Start date" } },
+                { "date": "2026-11-15", "field": { "name": "Target date" } },
+                { "number": 3, "field": { "name": "Estimate" } },
+                {}
+              ]
+            }
+          },
+          {
+            "id": "PVTI_2",
+            "isArchived": false,
+            "content": {
+              "__typename": "PullRequest",
+              "number": 13,
+              "title": "Fix hohmann rounding",
+              "url": "https://github.com/rjmlaird/rjmlaird-tools/pull/13",
+              "state": "MERGED",
+              "bodyHTML": "",
+              "repository": { "nameWithOwner": "rjmlaird/rjmlaird-tools" },
+              "labels": { "nodes": [] },
+              "assignees": { "nodes": [] }
+            },
+            "fieldValues": { "nodes": [{ "name": "Done", "field": { "name": "Status" } }, { "name": "Low", "field": { "name": "Priority" } }] }
+          },
+          {
+            "id": "PVTI_3",
+            "isArchived": false,
+            "content": { "__typename": "DraftIssue", "title": "Plan lab content", "bodyHTML": "<p>Draft notes.</p>" },
+            "fieldValues": { "nodes": [{ "date": "2026-12-01", "field": { "name": "Start date" } }, { "date": "2027-02-01", "field": { "name": "Target date" } }] }
+          },
+          {
+            "id": "PVTI_4",
+            "isArchived": false,
+            "content": null,
+            "fieldValues": { "nodes": [{ "name": "Todo", "field": { "name": "Status" } }] }
+          },
+          {
+            "id": "PVTI_5",
+            "isArchived": true,
+            "content": { "__typename": "Issue", "number": 1, "title": "Archived", "url": "https://github.com/rjmlaird/x/issues/1", "state": "CLOSED", "labels": { "nodes": [] }, "assignees": { "nodes": [] } },
+            "fieldValues": { "nodes": [] }
+          }
+        ]
+      }
+    },
+    {
+      "id": "PVT_sample_2",
+      "number": 2,
+      "title": "Sample roadmap",
+      "shortDescription": null,
+      "readme": null,
+      "url": "https://github.com/users/rjmlaird/projects/2",
+      "public": true,
+      "closed": true,
+      "createdAt": "2026-08-01T09:00:00Z",
+      "updatedAt": "2026-09-01T09:00:00Z",
+      "fields": { "nodes": [] },
+      "items": { "nodes": [] }
+    },
+    {
+      "id": "PVT_sample_3",
+      "number": 3,
+      "title": "Secret plans",
+      "shortDescription": "Private board",
+      "url": "https://github.com/users/rjmlaird/projects/3",
+      "public": false,
+      "closed": false,
+      "createdAt": "2026-08-01T09:00:00Z",
+      "updatedAt": "2026-09-01T09:00:00Z",
+      "fields": { "nodes": [] },
+      "items": { "nodes": [] }
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+---
+export interface Props {
+  leftTitle?: string;
+  rightTitle?: string;
+  rows: { left: string; right: string }[];
+  caption?: string;
+}
+
+const {
+  leftTitle = "Old approach",
+  rightTitle = "2026 approach",
+  rows,
+  caption,
+} = Astro.props as Props;
+---
+
+<div class="comparison-table">
+  <table>
+    {caption && <caption class="sr-only">{caption}</caption>}
+    <thead>
+      <tr>
+        <th scope="col">{leftTitle}</th>
+        <th scope="col">{rightTitle}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          <td>{row.left}</td>
+          <td>{row.right}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .comparison-table {
+    margin-block: 2rem;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.92rem;
+  }
+  thead {
+    background: var(--color-surface);
+  }
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+  }
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+  tbody tr:nth-child(even) {
+    background: var(--color-surface);
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+// src/components/BoardCard.astro
+import { formatDate, type Board } from "../lib/github-projects";
+
+interface Props {
+  board: Board;
+}
+
+const { board } = Astro.props;
+const { counts } = board;
+---
+
+<article class="card">
+  <p>
+    <span class="badge">{board.closed ? "Closed" : board.isPublic ? "Public" : "Private"}</span>
+    <span class="badge">#{board.number}</span>
+  </p>
+
+  <h2><a href={`/boards/${board.slug}/`}>{board.title}</a></h2>
+
+  {board.description && <p>{board.description}</p>}
+
+  <p class="meta">
+    {counts.total} {counts.total === 1 ? "item" : "items"} · {counts.open} open · {counts.closed} closed
+  </p>
+
+  <p class="meta">
+    Updated {formatDate(board.updatedAt)} · <a href={board.url}>GitHub <span aria-hidden="true">↗</span></a>
+  </p>
+</article>

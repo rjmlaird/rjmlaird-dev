@@ -1,0 +1,53 @@
+---
+// src/pages/boards/index.astro
+//
+// Index of GitHub Projects (v2) boards. Data: src/data/github-projects.json,
+// written by `pnpm sync:boards` and loaded through the `boards` content collection.
+import Layout from "../../layouts/Layout.astro";
+import BoardCard from "../../components/BoardCard.astro";
+import { boardsSnapshot, formatDate, getBoards } from "../../lib/github-projects";
+
+const boards = await getBoards();
+const items = boards.reduce((n, b) => n + b.counts.total, 0);
+const open = boards.reduce((n, b) => n + b.counts.open, 0);
+const synced = boardsSnapshot.syncedAt ? formatDate(boardsSnapshot.syncedAt) : "";
+const profile = `https://github.com/${boardsSnapshot.owner}?tab=projects`;
+---
+
+<Layout
+  title="GitHub Projects"
+  description="Planning boards from GitHub Projects: every board with its README, fields, issues, pull requests and draft items."
+>
+  <section class="page-head boards-head">
+    <p class="sl">Planning</p>
+
+    <h1>GitHub Projects</h1>
+
+    <p class="muted">
+      Planning boards for my labs, tools, apps and platform work, snapshotted from
+      <a href={profile} rel="noopener">GitHub Projects</a>. Boards track work on my
+      <a href="/open-source/">repositories</a> and <a href="/projects/">projects</a>.
+    </p>
+
+    <p class="meta" role="status">
+      {boards.length} {boards.length === 1 ? "board" : "boards"} · {items} items · {open} open
+      {synced && <> · synced {synced}</>}
+    </p>
+  </section>
+
+  {
+    boards.length > 0 ? (
+      <div class="grid">
+        {boards.map((board) => (
+          <BoardCard board={board} />
+        ))}
+      </div>
+    ) : (
+      <p class="empty-state">
+        No boards have been synced yet. Run <code>pnpm sync:boards</code> with a
+        <code>GITHUB_TOKEN</code> that has <code>read:project</code> access, then commit
+        <code>src/data/github-projects.json</code>.
+      </p>
+    )
+  }
+</Layout>

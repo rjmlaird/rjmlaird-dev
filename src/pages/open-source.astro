@@ -1,0 +1,163 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ComparisonTable from "../components/ComparisonTable.astro";
+import { SITE } from "../site";
+
+const L = SITE.links;
+
+const boundary = [
+  {
+    left: "Source for labs, tools, apps and the sites I build",
+    right: "Credentials, tokens, keys and any other secrets",
+  },
+  {
+    left: "Brand tokens, shared styles, policies and the glossary",
+    right: "Account and binding identifiers, internal hostnames and private URLs",
+  },
+  {
+    left: "API contracts, schemas and structured data formats",
+    right: "The exact rules of access policies",
+  },
+  {
+    left: "Planning boards for public projects",
+    right: "Private repositories, and services that are restricted by design",
+  },
+];
+
+const principles = [
+  {
+    title: "Build in public where it adds value",
+    tone: "teal",
+    text: "Sharing work helps when it lets someone learn from it, check it, reuse an idea or point out a mistake. I publish with that test in mind rather than publishing everything by default.",
+  },
+  {
+    title: "Keep infrastructure secure and private",
+    tone: "violet",
+    text: "Public means curated. The code and the thinking can be open without exposing how the estate is operated or protected. That line is drawn on purpose, and documented.",
+  },
+  {
+    title: "Show maturity honestly",
+    tone: "amber",
+    text: "Experiments, finished tools and full applications are kept apart so you can tell what you are looking at. Labs may be rough; apps are expected to be dependable; claims I have not verified are marked as such.",
+  },
+  {
+    title: "Prefer portable, open formats",
+    tone: "sky",
+    text: "Structured data, documented schemas, open standards and exportable data make work easier to reuse, verify and migrate, and avoid depending on opaque platforms.",
+  },
+  {
+    title: "Write decisions down",
+    tone: "coral",
+    text: "A repository without its reasoning is only half shared. I record architecture decisions and keep documentation alongside the code, especially where a system will be reused.",
+  },
+  {
+    title: "Make it accessible and understandable",
+    tone: "teal",
+    text: "Semantic HTML, plain language, clear structure and performance are requirements, not extras. Open work should be readable by people as well as by machines.",
+  },
+];
+---
+
+<Layout
+  title="Open source"
+  description="How Ryan Laird approaches open source: what is published, what stays private, and the principles behind each decision."
+>
+  <div class="wrap page">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Dev</a> / Open source</nav>
+
+    <header class="page-head">
+      <p class="sl">Open source</p>
+      <h1>How I approach open source</h1>
+      <p class="lead">
+        I build in public where it adds value, and keep infrastructure secure and private. This page explains
+        what that means in practice: what I publish, what I do not, and why.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/repos/">Browse the repositories</a>
+        <a class="btn" href="/boards/">See the planning boards</a>
+      </div>
+    </header>
+
+    <section class="block" aria-labelledby="principles-title">
+      <p class="tlbl">Principles</p>
+      <h2 id="principles-title">Six working rules</h2>
+      <div class="route-grid">
+        {principles.map((p) => (
+          <article class="route" data-tone={p.tone}>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="public-title">
+      <p class="tlbl">What I publish</p>
+      <h2 id="public-title">The work, and the thinking around it</h2>
+      <p>
+        Most of what you will find on GitHub falls into a few groups, each separated so its maturity is clear:
+      </p>
+      <ul class="checklist">
+        <li><strong>Labs</strong>: experiments and prototypes exploring ideas across space and science, where it is fine for things to be unfinished.</li>
+        <li><strong>Tools and apps</strong>: focused utilities and calculators, and more complete applications, each with a shared catalogue.</li>
+        <li><strong>Sites and data</strong>: the personal site and CV, an API for structured portfolio data, and a service-status dashboard.</li>
+        <li><strong>Foundations</strong>: shared brand tokens and guidelines, version-controlled policies, and a glossary of terms used across the work.</li>
+        <li><strong>Research tooling</strong>: tools for collecting and organising research feeds.</li>
+      </ul>
+      <p>
+        The <a href="/repos/">repositories page</a> is generated from GitHub at build time, so it reflects
+        what is actually public rather than a hand-maintained list. Planning is public too, through the
+        <a href="/boards/">project boards</a>, but only for boards that are public.
+      </p>
+    </section>
+
+    <section class="block" aria-labelledby="private-title">
+      <p class="tlbl">Where the line is</p>
+      <h2 id="private-title">Public by design, private by design</h2>
+      <p>
+        Openness and security are not opposites if the boundary is explicit. I keep the following rules for
+        anything I publish, including documentation:
+      </p>
+      <ComparisonTable
+        leftTitle="Published"
+        rightTitle="Kept private"
+        rows={boundary}
+        caption="What I publish compared with what I keep private"
+      />
+      <p>
+        Automated tooling follows the same rule. The site build uses public data wherever it can, falls back
+        to a saved snapshot if GitHub cannot be reached, and ignores any private board, even if one is
+        present in the data.
+      </p>
+    </section>
+
+    <section class="block" aria-labelledby="reuse-title">
+      <p class="tlbl">Reuse and contribution</p>
+      <h2 id="reuse-title">Using my work, and working with me</h2>
+      <p>
+        Public code is there to read, learn from and discuss. Reuse is governed by the licence in each
+        repository: where a repository includes a licence file, that is what applies, and where it does not,
+        please assume that all rights are reserved and ask me before reusing it.
+      </p>
+      <p>
+        Spotted a mistake or have an idea? Open an issue on the relevant repository. For anything larger, such
+        as a collaboration, consulting or a technical project, the best starting point is
+        <a href={L.contact} rel="noopener">my main site</a>.
+      </p>
+    </section>
+
+    <section class="block" aria-labelledby="docs-title">
+      <p class="tlbl">Documentation</p>
+      <h2 id="docs-title">Where the reasoning lives</h2>
+      <p>
+        Architecture notes, decisions, runbooks and reference material are documented separately from this
+        site, so the code stays light and the explanation stays maintained in one place.
+      </p>
+      <div class="cta-row">
+        <a class="btn" href={L.docs} rel="noopener">Read the documentation ↗</a>
+        <a class="btn" href={L.github} rel="me noopener">GitHub profile ↗</a>
+        <a class="btn" href="/stack/">The stack I use</a>
+      </div>
+    </section>
+  </div>
+</Layout>

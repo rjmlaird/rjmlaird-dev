@@ -1,0 +1,576 @@
+---
+import Layout from "../layouts/Layout.astro";
+import techStack from "../data/techstack.json";
+
+type StackItem = {
+  name: string;
+  url: string;
+  logo?: string;
+  color: string;
+  logoColor?: string;
+  context?: string;
+};
+
+type StackCategory = {
+  name: string;
+  items: StackItem[];
+};
+
+const categories = techStack.categories as StackCategory[];
+
+const totalTools = categories.reduce(
+  (total, category) => total + category.items.length,
+  0
+);
+
+function badgeUrl(item: StackItem): string {
+  const label = encodeURIComponent(item.name);
+  const logo = item.logo ? `&logo=${encodeURIComponent(item.logo)}` : "";
+  const logoColor = `&logoColor=${item.logoColor ?? "white"}`;
+
+  return `https://img.shields.io/badge/-${label}-${item.color}?style=flat-square${logo}${logoColor}`;
+}
+---
+
+<Layout
+  title="Tools & stack"
+  description="A cross-disciplinary toolkit shaped by Ryan Laird's background in physics, astrophysics, scientific computing, digital systems, marketing strategy and communications."
+>
+  <div class="wrap page stack-page">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Dev</a> / Tools &amp; stack
+    </nav>
+
+    <header class="page-head">
+      <p class="sl">Tools &amp; stack</p>
+      <h1>Technical depth, strategic thinking and practical digital delivery.</h1>
+
+      <div class="lede stack-intro">
+        <p>
+          My background begins in physics with astrophysics: a foundation that developed analytical
+          thinking, quantitative reasoning, scientific computing and a lasting interest in complex
+          systems. That technical grounding continues to shape how I approach digital work today.
+        </p>
+
+        <p>
+          My career has since moved across the space, satellite, sustainability and deep-tech
+          sectors, combining research literacy with marketing strategy, communications, web
+          development, content systems, data analysis and stakeholder engagement. I work best at
+          the point where technical capability needs to become clear, useful and commercially
+          meaningful for real audiences.
+        </p>
+
+        <p>
+          This is the working toolkit behind that intersection: technologies for research and
+          modelling; systems for publishing and data; and platforms for measurement, campaigns,
+          relationship management and digital delivery.
+        </p>
+      </div>
+
+      <div class="stack-summary" aria-label="Stack summary">
+        <p><strong>{categories.length}</strong> tool categories</p>
+        <p><strong>{totalTools}</strong> tools and platforms</p>
+      </div>
+    </header>
+
+    <section class="block stack-approach" aria-labelledby="approach-title">
+      <p class="tlbl">How I work</p>
+      <h2 id="approach-title">Connecting evidence, systems, audiences and outcomes.</h2>
+
+      <div class="approach-grid">
+        <article>
+          <h3>Scientific and technical</h3>
+          <p>
+            Physics and astrophysics inform a methodical approach to research, data, modelling and
+            problem-solving. I am comfortable moving between scientific tools, structured datasets,
+            geospatial platforms and technical subject matter.
+          </p>
+        </article>
+
+        <article>
+          <h3>Digital systems</h3>
+          <p>
+            I design and improve websites, information structures, content workflows, APIs,
+            automation and data pipelines. The aim is not complexity for its own sake, but systems
+            that are maintainable, documented and useful to the people who rely on them.
+          </p>
+        </article>
+
+        <article>
+          <h3>Strategy and communications</h3>
+          <p>
+            I use insight, positioning, content, campaigns and measurement to connect technical
+            work with the people it needs to reach: customers, partners, funders, researchers,
+            decision-makers and wider public audiences.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="block stack-controls" aria-labelledby="browse-title">
+      <p class="tlbl" id="browse-title">Browse the stack</p>
+      <p class="stack-controls-copy">
+        Filter by discipline or search for a language, platform, research tool, CMS, analytics
+        product or service.
+      </p>
+
+      <div class="filters-container">
+        <div class="filter-group">
+          <span class="filter-label">Category</span>
+
+          <div class="filters" id="category-filters">
+            <button class="filter-btn active" type="button" data-filter-category="all">
+              All tools
+            </button>
+
+            {categories.map((category) => (
+              <button
+                class="filter-btn"
+                type="button"
+                data-filter-category={category.name}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <label class="stack-search" for="tool-search">
+          <span class="filter-label">Search</span>
+          <input
+            id="tool-search"
+            type="search"
+            placeholder="Search a tool, language or category"
+            autocomplete="off"
+          />
+        </label>
+      </div>
+    </section>
+
+    <div class="stack-groups" id="stack-groups">
+      {categories.map((category) => (
+        <section class="block stack-group" data-category={category.name}>
+          <div class="stack-group-head">
+            <div>
+              <p class="tlbl">{category.name}</p>
+            </div>
+
+            <p class="stack-count">
+              {category.items.length} {category.items.length === 1 ? "tool" : "tools"}
+            </p>
+          </div>
+
+          <div class="stack-badges">
+            {category.items.map((item) => (
+              <a
+                class="stack-tool"
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-tool-name={item.name}
+                data-tool-category={category.name}
+                aria-label={`Visit ${item.name}${item.context ? `: ${item.context}` : ""}`}
+                title={item.context ? `${item.name} — ${item.context}` : item.name}
+              >
+                <img src={badgeUrl(item)} alt={item.name} loading="lazy" />
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <p class="empty-state stack-empty" id="stack-empty" hidden>
+      No tools match those filters. Try choosing another category or clearing the search.
+    </p>
+
+    <section class="block stack-principles" aria-labelledby="principles-title">
+      <p class="tlbl">Working principles</p>
+      <h2 id="principles-title">Technology should support a clear purpose.</h2>
+
+      <div class="principles-grid">
+        <article>
+          <h3>Appropriate complexity</h3>
+          <p>
+            I start with the problem, audience and operating constraints. A simple, fast and
+            well-maintained site is often the right answer; more involved infrastructure should
+            earn its place through a genuine need for automation, collaboration, data or scale.
+          </p>
+        </article>
+
+        <article>
+          <h3>Evidence before assumption</h3>
+          <p>
+            My scientific background encourages clear questions, sound data and proportionate
+            conclusions. Whether reviewing a campaign, a website or a technical proposition, I use
+            research and measurement to guide decisions rather than relying only on intuition.
+          </p>
+        </article>
+
+        <article>
+          <h3>Portable information</h3>
+          <p>
+            I prefer structured formats, documented schemas, open standards and exportable data.
+            This reduces unnecessary dependency on opaque platforms and makes information easier to
+            reuse, verify, migrate and maintain over time.
+          </p>
+        </article>
+
+        <article>
+          <h3>Accessible communication</h3>
+          <p>
+            Technical work creates value only when people can understand and use it. Semantic HTML,
+            plain language, clear information architecture, performance and inclusive interaction
+            patterns are fundamental requirements rather than post-launch enhancements.
+          </p>
+        </article>
+
+        <article>
+          <h3>Strategy connected to delivery</h3>
+          <p>
+            Strategy is useful when it improves priorities and actions. I connect positioning,
+            audience insight and campaign planning to practical content, systems, workflows and
+            measurement that can be delivered and improved.
+          </p>
+        </article>
+
+        <article>
+          <h3>Continuous learning</h3>
+          <p>
+            Tools evolve, but the ability to learn, evaluate and apply them thoughtfully endures.
+            I keep developing across software, scientific methods, automation, data and
+            communications, selecting technology according to context rather than fashion.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="block stack-note">
+      <p class="tlbl">A living reference</p>
+      <p>
+        This page is a map of my cross-disciplinary working environment, not a claim of identical
+        depth in every product listed. Some technologies are core to current delivery work; others
+        reflect established experience in physics, astrophysics, space systems, research software,
+        marketing operations or earlier CMS and technical projects.
+      </p>
+      <p>
+        The common thread is an ability to work across disciplines: understanding complex material,
+        building or improving the digital systems around it, and communicating its value clearly to
+        the people who need to act on it.
+      </p>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  const categoryButtons = document.querySelectorAll<HTMLButtonElement>(
+    "#category-filters .filter-btn"
+  );
+
+  const searchInput = document.querySelector<HTMLInputElement>("#tool-search");
+  const groups = document.querySelectorAll<HTMLElement>("#stack-groups .stack-group");
+  const emptyState = document.querySelector<HTMLElement>("#stack-empty");
+
+  let activeCategory = "all";
+  let searchTerm = "";
+
+  const normalise = (value: string) => value.toLowerCase().trim();
+
+  function applyFilters() {
+    let visibleTools = 0;
+
+    groups.forEach((group) => {
+      const groupCategory = normalise(group.dataset.category ?? "");
+      const categoryMatches =
+        activeCategory === "all" || groupCategory === normalise(activeCategory);
+
+      const tools = group.querySelectorAll<HTMLElement>(".stack-tool");
+      let groupHasVisibleTools = false;
+
+      tools.forEach((tool) => {
+        const toolName = normalise(tool.dataset.toolName ?? "");
+        const toolCategory = normalise(tool.dataset.toolCategory ?? "");
+
+        const searchMatches =
+          !searchTerm ||
+          toolName.includes(searchTerm) ||
+          toolCategory.includes(searchTerm);
+
+        const isVisible = categoryMatches && searchMatches;
+
+        tool.hidden = !isVisible;
+
+        if (isVisible) {
+          groupHasVisibleTools = true;
+          visibleTools += 1;
+        }
+      });
+
+      group.hidden = !groupHasVisibleTools;
+    });
+
+    if (emptyState) {
+      emptyState.hidden = visibleTools > 0;
+    }
+  }
+
+  categoryButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      categoryButtons.forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+
+      activeCategory = button.dataset.filterCategory ?? "all";
+      applyFilters();
+    });
+  });
+
+  searchInput?.addEventListener("input", () => {
+    searchTerm = normalise(searchInput.value);
+    applyFilters();
+  });
+
+  applyFilters();
+</script>
+
+<style>
+  .stack-page {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .stack-intro {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 76ch;
+  }
+
+  .stack-intro p {
+    margin: 0;
+  }
+
+  .stack-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.25rem;
+  }
+
+  .stack-summary p {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    border-radius: 999px;
+    font-size: 0.86rem;
+    opacity: 0.84;
+  }
+
+  .stack-summary strong {
+    color: var(--teal, #00c2a8);
+  }
+
+  .stack-approach > h2,
+  .stack-principles > h2 {
+    max-width: 28ch;
+    margin: 0.25rem 0 1.25rem;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    line-height: 1.15;
+  }
+
+  .approach-grid,
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .approach-grid article,
+  .principles-grid article {
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--navy-raised, #121826) 78%, transparent);
+  }
+
+  .approach-grid h3,
+  .principles-grid h3 {
+    margin: 0 0 0.55rem;
+    font-size: 1rem;
+  }
+
+  .approach-grid p,
+  .principles-grid p,
+  .stack-note > p:last-child {
+    max-width: 68ch;
+    margin: 0;
+    line-height: 1.65;
+    opacity: 0.84;
+  }
+
+  .stack-controls-copy {
+    max-width: 68ch;
+    margin: -0.35rem 0 1rem;
+    line-height: 1.65;
+    opacity: 0.84;
+  }
+
+  .filters-container {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .filter-group,
+  .stack-search {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .filter-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+    text-transform: uppercase;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .filter-btn {
+    padding: 0.52rem 0.75rem;
+    border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.88rem;
+    transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  }
+
+  .filter-btn:hover,
+  .filter-btn.active {
+    border-color: var(--teal, #00c2a8);
+    background: color-mix(in srgb, var(--teal, #00c2a8) 13%, transparent);
+    color: var(--teal, #00c2a8);
+  }
+
+  .filter-btn:focus-visible,
+  .stack-search input:focus-visible {
+    outline: 2px solid var(--teal, #00c2a8);
+    outline-offset: 2px;
+  }
+
+  .stack-search input {
+    width: min(100%, 38rem);
+    padding: 0.75rem 0.9rem;
+    border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+    border-radius: 0.8rem;
+    background: transparent;
+    color: currentColor;
+    font: inherit;
+  }
+
+  .stack-search input::placeholder {
+    color: currentColor;
+    opacity: 0.52;
+  }
+
+  .stack-groups {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .stack-group {
+    margin: 0;
+  }
+
+  .stack-group-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .stack-group-head .tlbl {
+    margin: 0;
+  }
+
+  .stack-count {
+    margin: 0;
+    font-size: 0.86rem;
+    opacity: 0.66;
+    white-space: nowrap;
+  }
+
+  .stack-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .stack-tool {
+    display: inline-flex;
+    border-radius: 0.25rem;
+    line-height: 0;
+    transition: transform 160ms ease, opacity 160ms ease;
+  }
+
+  .stack-tool:hover {
+    opacity: 0.88;
+    transform: translateY(-2px);
+  }
+
+  .stack-tool:focus-visible {
+    outline: 2px solid var(--teal, #00c2a8);
+    outline-offset: 3px;
+  }
+
+  .stack-tool img {
+    max-width: 100%;
+    height: 20px;
+  }
+
+  .stack-empty {
+    margin: 0;
+  }
+
+  .stack-note {
+    display: grid;
+    gap: 0.9rem;
+    border-left: 3px solid var(--teal, #00c2a8);
+  }
+
+  .stack-note .tlbl {
+    margin: 0;
+  }
+
+  .stack-note > p:last-child {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    .approach-grid,
+    .principles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stack-group-head {
+      align-items: start;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .filter-btn {
+      font-size: 0.82rem;
+    }
+
+    .stack-badges {
+      gap: 0.45rem;
+    }
+  }
+</style>

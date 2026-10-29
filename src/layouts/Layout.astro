@@ -1,0 +1,110 @@
+---
+import "../styles/global.css";
+import { SITE, NAV } from "../site";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Extra JSON-LD nodes for this page (added to the shared @graph). */
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { title, description = SITE.description, jsonLd = [] } = Astro.props;
+
+const path = Astro.url.pathname;
+const canonical = new URL(path, SITE.url).toString();
+const fullTitle = path === "/" ? `${SITE.name} — developer hub` : `${title} · ${SITE.name}`;
+const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+
+const graph = [
+  {
+    "@type": "WebSite",
+    "@id": `${SITE.url}/#website`,
+    url: `${SITE.url}/`,
+    name: SITE.name,
+    description: SITE.description,
+    inLanguage: "en-GB",
+    author: { "@id": SITE.personId },
+    publisher: { "@id": SITE.personId },
+  },
+  // Reference only; the full Person node is defined on the canonical site.
+  { "@type": "Person", "@id": SITE.personId, name: "Ryan Laird", url: SITE.links.main },
+  {
+    "@type": "WebPage",
+    "@id": `${canonical}#webpage`,
+    url: canonical,
+    name: fullTitle,
+    description,
+    isPartOf: { "@id": `${SITE.url}/#website` },
+    about: { "@id": SITE.personId },
+  },
+  ...jsonLd,
+];
+const ld = JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0B0F1A" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+    />
+
+    <script type="application/ld+json" set:html={ld} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="/" aria-label="Ryan Laird Dev, home">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>rjmlaird<span class="brand-dim">/dev</span></span>
+        </a>
+        <nav class="nav" aria-label="Main navigation">
+          {NAV.map((item) => (
+            <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>{item.label}</a>
+          ))}
+          <a class="nav-ext" href={SITE.links.main} rel="noopener">Main site <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="shell">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <p>Developer hub of {SITE.author}. Built with Astro; GitHub data is fetched at build time.</p>
+        <p>
+          <a href={SITE.links.github} rel="noopener">GitHub</a> ·
+          <a href={SITE.links.linkedin} rel="noopener">LinkedIn</a> ·
+          <a href={SITE.links.main} rel="noopener">rjmlaird.co.uk</a> ·
+          <a href={SITE.links.cv} rel="noopener">CV</a> ·
+          <a href={SITE.links.status} rel="noopener">Status</a> ·
+          <a href={SITE.links.docs} rel="noopener">Docs</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
