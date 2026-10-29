@@ -24,7 +24,7 @@ export const SITE = {
   links: {
     main: "https://rjmlaird.co.uk",
     contact: "https://rjmlaird.co.uk/contact",
-    cv: "https://rjmlaird.co.uk",
+    cv: "https://cv.rjmlaird.co.uk",
     github: "https://github.com/rjmlaird",
     linkedin: "https://www.linkedin.com/in/rjmlaird",
     labs: "https://labs.rjmlaird.co.uk",
