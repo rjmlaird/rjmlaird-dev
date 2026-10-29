@@ -1,0 +1,47 @@
+# Secrets: never commit. Keep the template.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Astro / build output
+dist/
+.astro/
+.vercel/
+.netlify/
+.wrangler/
+
+# Logs and debug
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test and tool caches
+coverage/
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*~
+
+# Obsidian (if the folder is opened as a vault)
+.obsidian/
