@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="26" fill="#0B0F1A"/><g transform="translate(4 4)"><defs><mask id="gap"><rect width="120" height="120" fill="#fff"/><circle cx="95.24" cy="30.43" r="21" fill="#000"/></mask></defs>
+<circle cx="60" cy="60" r="46" fill="none" stroke="#EDEAE3" stroke-width="11" mask="url(#gap)"/>
+<circle cx="60" cy="60" r="12" fill="#00C2A8"/>
+<circle cx="95.24" cy="30.43" r="15" fill="#00C2A8"/></g></svg>
